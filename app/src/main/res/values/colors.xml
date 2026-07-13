@@ -1,0 +1,14 @@
+<resources>
+    <color name="whiteyun_surface">#F8FAFC</color>
+    <color name="whiteyun_text">#111827</color>
+    <color name="whiteyun_muted_text">#374151</color>
+    <color name="colorPrimary">#FF9800</color>
+    <color name="colorPrimaryDark">#F57C00</color>
+    <color name="colorAccent">#00BCD4</color>
+    <color name="bright_blue">#33B5E5</color>
+    <color name="blue_grey_300">#90A4AE</color>
+    <color name="teal_400">#26A69A</color>
+    <color name="light_gray_bg">#FAFAFA</color>
+    <color name="yellow_light">#FFEE58</color>
+    <color name="purple_300">#BA68C8</color>
+</resources>

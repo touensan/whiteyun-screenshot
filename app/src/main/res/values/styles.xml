@@ -1,0 +1,26 @@
+<resources>
+    <style name="AppTheme" parent="@android:style/Theme.Material.Light">
+        <item name="android:actionBarStyle">@style/AppTheme.ActionBar</item>
+        <item name="android:colorAccent">@color/colorAccent</item>
+        <item name="android:navigationBarColor">@color/whiteyun_surface</item>
+        <item name="android:statusBarColor">@color/colorPrimaryDark</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowNoTitle">false</item>
+    </style>
+
+    <style name="AppTheme.ActionBar" parent="@android:style/Widget.Material.ActionBar.Solid">
+        <item name="android:background">@color/colorPrimary</item>
+        <item name="android:titleTextStyle">@style/AppTheme.ActionBar.Title</item>
+    </style>
+
+    <style name="AppTheme.ActionBar.Title" parent="@android:style/TextAppearance.Material.Widget.ActionBar.Title">
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
+    <style name="AppTheme.NoActionBar" parent="@android:style/Theme.Material.Light.NoActionBar">
+        <item name="android:colorAccent">@color/colorAccent</item>
+        <item name="android:navigationBarColor">@color/whiteyun_surface</item>
+        <item name="android:statusBarColor">@color/colorPrimaryDark</item>
+        <item name="android:windowLightStatusBar">false</item>
+    </style>
+</resources>

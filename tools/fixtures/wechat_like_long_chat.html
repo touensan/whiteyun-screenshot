@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+  <title>白云截屏聊天回归页</title>
+  <style>
+    * { box-sizing: border-box; }
+    html, body { margin: 0; background: #ededed; color: #202124; font: 15px/1.45 system-ui, sans-serif; }
+    header { position: sticky; top: 0; z-index: 3; height: 60px; display: flex; align-items: center; justify-content: space-between; padding: 0 16px; background: #f7f7f7; border-bottom: 1px solid #d7d7d7; font-weight: 650; }
+    main { padding: 14px 12px 86px; }
+    .time { width: max-content; margin: 16px auto 12px; padding: 3px 9px; border-radius: 6px; background: #d0d0d0; color: #fff; font-size: 12px; }
+    .row { display: flex; gap: 9px; align-items: flex-start; margin: 12px 0; }
+    .row.me { flex-direction: row-reverse; }
+    .avatar { flex: 0 0 38px; height: 38px; display: grid; place-items: center; border-radius: 7px; color: #fff; font-weight: 700; }
+    .bubble { position: relative; max-width: 72%; min-height: 38px; padding: 10px 12px; border-radius: 7px; background: #fff; box-shadow: 0 1px 0 rgb(0 0 0 / .06); }
+    .me .bubble { background: #95ec69; }
+    .id { display: inline-block; margin-right: 7px; color: #667085; font: 700 11px/1 system-ui, sans-serif; }
+    .photo { width: 210px; height: 126px; display: grid; place-items: end start; padding: 10px; color: #fff; border-radius: 5px; background: linear-gradient(145deg, #155eef, #7a5af8 52%, #ee46bc); font-weight: 700; }
+    .marker { position: absolute; top: 8px; bottom: 8px; width: 3px; border-radius: 3px; background: var(--marker); }
+    .me .marker { right: 4px; }
+    .row:not(.me) .marker { left: 4px; }
+    footer { position: fixed; left: 0; right: 0; bottom: 0; z-index: 4; height: 70px; display: flex; align-items: center; gap: 10px; padding: 10px 12px; background: #fafafa; border-top: 1px solid #d7d7d7; }
+    footer span { flex: 1; height: 44px; padding: 11px 14px; border-radius: 8px; background: #fff; color: #8a8a8a; }
+    .typing::after { content: "•••"; display: inline-block; width: 24px; overflow: hidden; vertical-align: bottom; animation: blink 1.1s steps(4) infinite; }
+    html.static .typing::after { animation: none; width: 24px; }
+    @keyframes blink { 0% { width: 4px; } 100% { width: 24px; } }
+  </style>
+</head>
+<body>
+  <header><span>‹</span><span>白云测试群（18）</span><span>•••</span></header>
+  <main id="chat"></main>
+  <footer><b>＋</b><span>输入消息…</span><b class="typing"></b></footer>
+  <script>
+    if (new URLSearchParams(location.search).has('static')) document.documentElement.classList.add('static');
+    const chat = document.querySelector('#chat');
+    const repeated = ['收到，稍后处理。', '这条内容用于重复版式测试。', '好的，我看一下。', '文件已经同步。'];
+    for (let i = 1; i <= 72; i++) {
+      if (i % 6 === 1) chat.insertAdjacentHTML('beforeend', `<div class="time">${i % 12 === 1 ? '10:08' : '昨天'}</div>`);
+      const mine = i % 3 !== 0;
+      const hue = (i * 47) % 360;
+      const marker = `hsl(${(i * 83) % 360} 75% 48%)`;
+      const body = i % 9 === 0
+        ? `<div class="photo">图片消息 · M${String(i).padStart(3, '0')}</div>`
+        : `<span class="id">M${String(i).padStart(3, '0')}</span>${repeated[i % repeated.length]}${i % 5 === 0 ? '<br>第二行文字增加气泡高度差异。' : ''}`;
+      chat.insertAdjacentHTML('beforeend', `<div class="row ${mine ? 'me' : ''}"><div class="avatar" style="background:hsl(${hue} 55% 48%)">${i % 7}</div><div class="bubble" style="--marker:${marker}"><i class="marker"></i>${body}</div></div>`);
+    }
+  </script>
+</body>
+</html>

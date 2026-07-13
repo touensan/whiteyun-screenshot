@@ -1,0 +1,82 @@
+plugins {
+    id 'com.android.application'
+}
+
+def keystoreProperties = new Properties()
+def keystorePropertiesFile = rootProject.file('keystore.properties')
+if (keystorePropertiesFile.exists()) {
+    keystorePropertiesFile.withInputStream { keystoreProperties.load(it) }
+}
+
+def releaseStoreFilePath = keystoreProperties['storeFile'] ?: System.getenv('WHITEYUN_RELEASE_STORE_FILE')
+def releaseStorePassword = keystoreProperties['storePassword'] ?: System.getenv('WHITEYUN_RELEASE_STORE_PASSWORD')
+def releaseKeyAlias = keystoreProperties['keyAlias'] ?: System.getenv('WHITEYUN_RELEASE_KEY_ALIAS')
+def releaseKeyPassword = keystoreProperties['keyPassword'] ?: System.getenv('WHITEYUN_RELEASE_KEY_PASSWORD')
+def releaseStoreFile = releaseStoreFilePath ? rootProject.file(releaseStoreFilePath) : null
+def hasReleaseSigning = releaseStoreFile != null
+        && releaseStoreFile.exists()
+        && releaseStorePassword
+        && releaseKeyAlias
+        && releaseKeyPassword
+
+android {
+    namespace 'com.whiteyun.screenshot'
+    compileSdk 36
+
+    buildFeatures {
+        buildConfig true
+    }
+
+    signingConfigs {
+        release {
+            if (hasReleaseSigning) {
+                storeFile releaseStoreFile
+                storePassword releaseStorePassword
+                keyAlias releaseKeyAlias
+                keyPassword releaseKeyPassword
+            }
+        }
+    }
+
+    defaultConfig {
+        applicationId 'com.whiteyun.screenshot'
+        minSdk 29
+        targetSdk 36
+        versionCode 10
+        versionName '1.6.3'
+    }
+
+    buildTypes {
+        debug {
+            buildConfigField 'boolean', 'BETA_DIAGNOSTICS', 'true'
+        }
+        release {
+            debuggable false
+            minifyEnabled true
+            shrinkResources true
+            buildConfigField 'boolean', 'BETA_DIAGNOSTICS', 'false'
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            if (hasReleaseSigning) {
+                signingConfig signingConfigs.release
+            }
+        }
+        beta {
+            initWith release
+            debuggable false
+            buildConfigField 'boolean', 'BETA_DIAGNOSTICS', 'false'
+            if (hasReleaseSigning) {
+                signingConfig signingConfigs.release
+            }
+            matchingFallbacks = ['release']
+        }
+    }
+
+    sourceSets {
+        beta.java.srcDir 'src/debug/java'
+    }
+
+}
+
+dependencies {
+    implementation 'ar.com.hjg:pngj:2.1.0'
+}

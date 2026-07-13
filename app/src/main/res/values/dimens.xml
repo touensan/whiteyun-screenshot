@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="main_option_icon_width">88dp</dimen>
+    <dimen name="main_option_icon_height">68dp</dimen>
+    <dimen name="main_option_icon_margin_left">6dp</dimen>
+    <dimen name="main_option_icon_margin_top">42dp</dimen>
+</resources>

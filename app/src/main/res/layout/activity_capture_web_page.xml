@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/url_bar"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <ImageButton
+            android:id="@+id/ib_back"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="?android:attr/selectableItemBackground"
+            android:contentDescription="@string/c10_action_back"
+            android:padding="12dp"
+            android:src="@drawable/ic_arrow_back" />
+
+        <EditText
+            android:id="@+id/et_url"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@null"
+            android:hint="@string/url_hint"
+            android:imeOptions="actionDone|flagForceAscii"
+            android:inputType="textUri|textNoSuggestions"
+            android:singleLine="true"
+            android:textSize="16sp" />
+
+        <ImageButton
+            android:id="@+id/ib_refresh"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="?android:attr/selectableItemBackground"
+            android:contentDescription="@string/c10_action_refresh"
+            android:padding="12dp"
+            android:src="@drawable/ic_refresh" />
+
+        <ImageButton
+            android:id="@+id/ib_clear_url"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="?android:attr/selectableItemBackground"
+            android:contentDescription="@string/c10_action_clear_url"
+            android:padding="12dp"
+            android:src="@drawable/ic_close" />
+    </LinearLayout>
+
+    <View
+        android:id="@+id/url_bar_divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#d2d7e1" />
+
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:max="100"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:id="@+id/web_actions"
+        android:layout_width="match_parent"
+        android:layout_height="46dp"
+        android:background="@color/light_gray_bg"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingLeft="4dp"
+        android:paddingRight="4dp">
+
+        <Button
+            android:id="@+id/btn_clear_sticky"
+            android:layout_width="wrap_content"
+            android:layout_height="42dp"
+            android:fontFamily="sans-serif-condensed"
+            android:paddingLeft="12dp"
+            android:paddingRight="12dp"
+            android:text="@string/clear_sticky"
+            android:textAllCaps="false" />
+
+        <TextView
+            android:id="@+id/web_status"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:singleLine="true"
+            android:textColor="@color/whiteyun_muted_text"
+            android:textSize="13sp" />
+
+        <Button
+            android:id="@+id/btn_set_start_pos"
+            android:layout_width="wrap_content"
+            android:layout_height="42dp"
+            android:fontFamily="sans-serif-condensed"
+            android:paddingLeft="12dp"
+            android:paddingRight="12dp"
+            android:textAllCaps="false" />
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/web_frame"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <View
+            android:id="@+id/webpage_end_divider"
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_gravity="bottom"
+            android:background="@android:color/holo_red_light"
+            android:visibility="invisible" />
+    </FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/capture_bar"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="@color/light_gray_bg"
+        android:gravity="center_vertical|right"
+        android:orientation="horizontal"
+        android:paddingLeft="4dp"
+        android:paddingRight="4dp">
+
+        <Button
+            android:id="@+id/btn_capture"
+            android:layout_width="wrap_content"
+            android:layout_height="42dp"
+            android:fontFamily="sans-serif-condensed"
+            android:paddingLeft="12dp"
+            android:paddingRight="12dp"
+            android:text="@string/web_page_end_and_capture"
+            android:textAllCaps="false" />
+    </LinearLayout>
+</LinearLayout>
