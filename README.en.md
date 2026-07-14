@@ -21,6 +21,7 @@ The familiar frontend style draws from LongScreenShot, but the implementation wa
   <img src="docs/screenshots/04-history.png" width="220" alt="Capture history" />
   <img src="docs/screenshots/05-webpage.png" width="220" alt="Webpage capture" />
   <img src="docs/screenshots/06-language-picker.png" width="220" alt="In-app language picker" />
+  <img src="docs/screenshots/07-home-language.png" width="220" alt="Home language button" />
 </p>
 
 ### Turn a scrolling screen into one image

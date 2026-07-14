@@ -27,6 +27,7 @@
   <img src="docs/screenshots/04-history.png" width="220" alt="历史记录" />
   <img src="docs/screenshots/05-webpage.png" width="220" alt="网页长图入口" />
   <img src="docs/screenshots/06-language-picker.png" width="220" alt="应用内语言选择" />
+  <img src="docs/screenshots/07-home-language.png" width="220" alt="首页语言按钮" />
 </p>
 
 ### 一张屏幕，直接变成长图
