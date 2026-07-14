@@ -1,6 +1,5 @@
 package com.whiteyun.screenshot;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.net.Uri;
@@ -16,7 +15,7 @@ import java.io.File;
 import java.util.List;
 
 /** Permanent diagnostics surface for the same-signature Beta build. */
-public final class BetaDiagnosticsActivity extends Activity {
+public final class BetaDiagnosticsActivity extends LocalizedActivity {
     private TextView report;
 
     @Override

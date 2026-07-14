@@ -35,7 +35,7 @@ import java.util.Locale;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class WebPageCaptureActivity extends Activity {
+public class WebPageCaptureActivity extends LocalizedActivity {
     private static final int MAX_CAPTURE_HEIGHT = 32000;
     private static final int MAX_CAPTURE_PIXELS = 36_000_000;
 

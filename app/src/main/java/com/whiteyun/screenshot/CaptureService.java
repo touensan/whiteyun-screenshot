@@ -59,7 +59,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class CaptureService extends Service {
+public class CaptureService extends LocalizedService {
     public static final String ACTION_START = "com.whiteyun.screenshot.action.START_CAPTURE";
     public static final String ACTION_CAPTURE_BEGIN = "com.whiteyun.screenshot.action.CAPTURE_BEGIN";
     public static final String ACTION_SAVE_FRAME = "com.whiteyun.screenshot.action.SAVE_FRAME";
@@ -1230,8 +1230,7 @@ public class CaptureService extends Service {
                                             total));
                     if (stitchPlan.needsManualAdjustment()) {
                         int seam = stitchPlan.firstManualSeam();
-                        throw new IOException(
-                                "第 " + seam + " 段出现多个相似位置，为避免错图已停止拼接");
+                        throw new IOException(getString(R.string.error_stitch_ambiguous_segment, seam));
                     }
                     // C31 continuity: LongScreenshotStitcher.analyze(manualFrames, autoMode, scrollDeltas)
                     stageStartMs = logStitchTiming(autoMode, "analyze_overlap", jobStartMs, stageStartMs);
@@ -1561,7 +1560,7 @@ public class CaptureService extends Service {
     private File writeAutoFrameFile(Bitmap bitmap, int index) throws IOException {
         File cache = getCacheDir();
         if (cache.getUsableSpace() < AUTO_STORAGE_RESERVE_BYTES) {
-            throw new IOException("存储空间不足，已停止自动长截屏");
+            throw new IOException(getString(R.string.error_storage_low));
         }
         if (autoFrameDir == null) {
             File root = new File(cache, "auto-frames");
@@ -1584,11 +1583,11 @@ public class CaptureService extends Service {
         }
         if ((file.exists() && !file.delete()) || !part.renameTo(file)) {
             part.delete();
-            throw new IOException("自动长截图原始帧发布失败");
+            throw new IOException(getString(R.string.error_auto_frames_publish));
         }
         if (cache.getUsableSpace() < AUTO_STORAGE_RESERVE_BYTES) {
             file.delete();
-            throw new IOException("存储空间不足，已停止自动长截屏");
+            throw new IOException(getString(R.string.error_storage_low));
         }
         Log.i(LOG_TAG, "auto_frame_spool index=" + (index + 1)
                 + " ms=" + (SystemClock.elapsedRealtime() - writeStartMs)
@@ -1598,12 +1597,12 @@ public class CaptureService extends Service {
 
     private ArrayList<File> autoFrameFilesForStitch() throws IOException {
         if (autoFrameFiles.size() != manualFrames.size()) {
-            throw new IOException("自动长截图帧清单不完整");
+            throw new IOException(getString(R.string.error_auto_manifest_incomplete));
         }
         ArrayList<File> files = new ArrayList<>(autoFrameFiles);
         for (File file : files) {
             if (!file.isFile()) {
-                throw new IOException("自动长截图原始帧丢失");
+                throw new IOException(getString(R.string.error_auto_frame_missing));
             }
         }
         if (autoScrollReverseDirection) {

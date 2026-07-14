@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /** A single foreground worker that drains durable long-shot stitch jobs in FIFO order. */
-public final class StitchQueueService extends Service {
+public final class StitchQueueService extends LocalizedService {
     static final String ACTION_PROCESS = "com.whiteyun.screenshot.action.PROCESS_STITCH_QUEUE";
     static final String EXTRA_JOB_ID = "stitch_job_id";
 

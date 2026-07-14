@@ -45,7 +45,7 @@ final class StreamingLongScreenshotStitcher {
             ProgressCallback analyzeProgress,
             ProgressCallback writeProgress) throws IOException {
         if (frameFiles == null || frameFiles.isEmpty()) {
-            throw new IllegalArgumentException("没有可拼接的采样帧");
+            throw new IllegalArgumentException(WhiteYunScreenshotApp.text(R.string.error_no_frames));
         }
         FrameBounds bounds = readBounds(frameFiles);
         SegmentPlan segments = analyze(frameFiles, scrollDeltas, bounds, analyzeProgress);
@@ -64,7 +64,7 @@ final class StreamingLongScreenshotStitcher {
 
     static void crop(File source, Rect crop, File output) throws IOException {
         if (source == null || !source.isFile()) {
-            throw new IOException("待裁剪长图不存在");
+            throw new IOException(WhiteYunScreenshotApp.text(R.string.error_stream_source_missing));
         }
         File part = new File(output.getAbsolutePath() + ".part");
         part.delete();
@@ -77,7 +77,7 @@ final class StreamingLongScreenshotStitcher {
                     || crop.right > decoder.getWidth()
                     || crop.bottom > decoder.getHeight()
                     || crop.isEmpty()) {
-                throw new IllegalArgumentException("长图裁剪区域无效");
+                throw new IllegalArgumentException(WhiteYunScreenshotApp.text(R.string.error_stream_crop_invalid));
             }
             writeCroppedPng(decoder, crop, part);
             verify(part, crop.width(), crop.height());
@@ -94,7 +94,7 @@ final class StreamingLongScreenshotStitcher {
 
     static void writeFramePng(Bitmap bitmap, File output) throws IOException {
         if (bitmap == null || bitmap.isRecycled()) {
-            throw new IllegalArgumentException("待写入帧无效");
+            throw new IllegalArgumentException(WhiteYunScreenshotApp.text(R.string.error_stream_frame_invalid));
         }
         File parent = output.getParentFile();
         if (parent != null && !parent.isDirectory() && !parent.mkdirs()) {
@@ -283,9 +283,11 @@ final class StreamingLongScreenshotStitcher {
                     consensusScores[i] = pairPlan.consensusScores[1];
                     noMovement[i] = pairPlan.noMovement[1];
                     seamMessages[i] = pathSupported
-                            ? "连续滚动轨迹确认"
+                            ? WhiteYunScreenshotApp.text(R.string.stream_path_confirmed)
                             : pairPlan.manualRequired[1]
-                                    ? "低置信候选：" + pairPlan.seamMessages[1]
+                                    ? WhiteYunScreenshotApp.text(
+                                            R.string.stream_low_confidence,
+                                            pairPlan.seamMessages[1])
                                     : pairPlan.seamMessages[1];
                     usedScrollDeltas[i] = delta;
                     expectedOverlaps[i] = pairPlan.expectedOverlaps[1];
@@ -313,7 +315,7 @@ final class StreamingLongScreenshotStitcher {
             contentRects[i] = new Rect(0, sourceTops[i], bounds.width, sourceBottoms[i]);
             totalHeight += sourceBottoms[i] - sourceTops[i];
             if (totalHeight > Integer.MAX_VALUE) {
-                throw new IllegalArgumentException("长图高度超过 PNGJ/Android 可处理范围");
+                throw new IllegalArgumentException(WhiteYunScreenshotApp.text(R.string.error_stream_height_limit));
             }
         }
         LongScreenshotStitcher.StitchPlan plan = new LongScreenshotStitcher.StitchPlan(
@@ -521,7 +523,7 @@ final class StreamingLongScreenshotStitcher {
                     if (block != null) {
                         block.recycle();
                     }
-                    throw new IOException("长图裁剪分块解码失败");
+                    throw new IOException(WhiteYunScreenshotApp.text(R.string.error_stream_crop_decode));
                 }
                 try {
                     for (int y = 0; y < block.getHeight(); y++) {
@@ -549,7 +551,7 @@ final class StreamingLongScreenshotStitcher {
 
     private static void publish(File part, File output) throws IOException {
         if ((output.exists() && !output.delete()) || !part.renameTo(output)) {
-            throw new IOException("流式 PNG 发布失败");
+            throw new IOException(WhiteYunScreenshotApp.text(R.string.error_stream_publish));
         }
     }
 
@@ -558,13 +560,13 @@ final class StreamingLongScreenshotStitcher {
         try {
             decoder = BitmapRegionDecoder.newInstance(output.getAbsolutePath(), false);
             if (decoder.getWidth() != expectedWidth || decoder.getHeight() != expectedHeight) {
-                throw new IOException("流式 PNG 尺寸校验失败");
+                throw new IOException(WhiteYunScreenshotApp.text(R.string.error_stream_size_verify));
             }
             int[] rows = {0, expectedHeight / 2, expectedHeight - 1};
             for (int y : rows) {
                 Bitmap sample = decoder.decodeRegion(new Rect(0, y, 1, y + 1), null);
                 if (sample == null) {
-                    throw new IOException("流式 PNG 区域校验失败");
+                    throw new IOException(WhiteYunScreenshotApp.text(R.string.error_stream_region_verify));
                 }
                 sample.recycle();
             }
@@ -583,7 +585,9 @@ final class StreamingLongScreenshotStitcher {
             options.inJustDecodeBounds = true;
             BitmapFactory.decodeFile(files.get(i).getAbsolutePath(), options);
             if (options.outWidth <= 0 || options.outHeight <= 0) {
-                throw new IOException("无法读取原始帧：" + files.get(i).getName());
+                throw new IOException(WhiteYunScreenshotApp.text(
+                        R.string.error_stream_read_frame,
+                        files.get(i).getName()));
             }
             width = Math.min(width, options.outWidth);
             heights[i] = options.outHeight;
@@ -596,15 +600,20 @@ final class StreamingLongScreenshotStitcher {
         options.inPreferredConfig = Bitmap.Config.ARGB_8888;
         Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath(), options);
         if (bitmap == null) {
-            throw new IOException("无法解码原始帧：" + file.getName());
+            throw new IOException(WhiteYunScreenshotApp.text(
+                    R.string.error_stream_decode_frame,
+                    file.getName()));
         }
         return bitmap;
     }
 
     private static void validateSegment(int index, int top, int bottom, int frameHeight) {
         if (top < 0 || bottom > frameHeight || bottom <= top) {
-            throw new IllegalArgumentException(
-                    "第 " + (index + 1) + " 帧没有可输出内容：" + top + "-" + bottom);
+            throw new IllegalArgumentException(WhiteYunScreenshotApp.text(
+                    R.string.error_stream_empty_frame_region,
+                    index + 1,
+                    top,
+                    bottom));
         }
     }
 

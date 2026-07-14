@@ -38,7 +38,7 @@ import java.util.Locale;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class StitchImagesActivity extends Activity {
+public class StitchImagesActivity extends LocalizedActivity {
     private static final int REQUEST_PICK_IMAGES = 5001;
     private static final int MIN_IMAGES = 2;
     private static final int MAX_DECODE_WIDTH = 1440;
@@ -497,7 +497,7 @@ public class StitchImagesActivity extends Activity {
         thumbnail.setBackgroundColor(0xffe5e7eb);
         bindThumbnail(thumbnail, imageUris.get(index));
         LinearLayout.LayoutParams thumbnailParams = new LinearLayout.LayoutParams(dp(56), dp(56));
-        thumbnailParams.rightMargin = dp(10);
+        thumbnailParams.setMarginEnd(dp(10));
         row.addView(thumbnail, thumbnailParams);
 
         LinearLayout textColumn = new LinearLayout(this);
@@ -695,7 +695,7 @@ public class StitchImagesActivity extends Activity {
             BitmapFactory.decodeStream(input, null, bounds);
         }
         if (bounds.outWidth <= 0 || bounds.outHeight <= 0) {
-            throw new IOException("无法读取图片尺寸");
+            throw new IOException(getString(R.string.error_image_dimensions));
         }
 
         BitmapFactory.Options options = new BitmapFactory.Options();
@@ -712,7 +712,7 @@ public class StitchImagesActivity extends Activity {
             }
             Bitmap bitmap = BitmapFactory.decodeStream(input, null, options);
             if (bitmap == null) {
-                throw new IOException("无法解码图片");
+                throw new IOException(getString(R.string.error_image_decode));
             }
             return cropSystemBars ? cropSystemBars(bitmap) : bitmap;
         }

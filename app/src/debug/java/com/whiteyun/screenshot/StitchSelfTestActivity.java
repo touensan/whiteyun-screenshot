@@ -18,7 +18,7 @@ import java.util.Locale;
 import java.io.File;
 
 /** Debug-only, dependency-free device check for chat-style long screenshot stitching. */
-public final class StitchSelfTestActivity extends Activity {
+public final class StitchSelfTestActivity extends LocalizedActivity {
     private static final String TAG = "WhiteYunStitchSelfTest";
     private static final int WIDTH = 360;
     private static final int HEIGHT = 900;
@@ -46,11 +46,11 @@ public final class StitchSelfTestActivity extends Activity {
         status.setGravity(Gravity.CENTER);
         status.setPadding(32, 32, 32, 32);
         status.setTextSize(18);
-        status.setText("正在运行聊天拼接自测…");
+        status.setText(R.string.self_test_running);
         setContentView(status);
 
         if (getIntent() != null && getIntent().getBooleanExtra("replay_latest", false)) {
-            status.setText("正在将最近失败的原始帧加入后台队列…");
+            status.setText(R.string.self_test_queueing);
             new Thread(this::enqueueLatestAutoReplay, "whiteyun-stitch-replay").start();
             return;
         }
@@ -65,7 +65,7 @@ public final class StitchSelfTestActivity extends Activity {
         try {
             File root = new File(getCacheDir(), "auto-frames");
             File[] sessions = root.listFiles(File::isDirectory);
-            check(sessions != null && sessions.length > 0, "没有可恢复的自动长截图原始帧");
+            check(sessions != null && sessions.length > 0, getString(R.string.self_test_no_session));
             File latest = sessions[0];
             for (File session : sessions) {
                 if (session.lastModified() > latest.lastModified()) {
@@ -73,7 +73,7 @@ public final class StitchSelfTestActivity extends Activity {
                 }
             }
             File[] rawFrames = latest.listFiles(file -> file.getName().endsWith(".png"));
-            check(rawFrames != null && rawFrames.length >= 2, "最近原始帧不完整");
+            check(rawFrames != null && rawFrames.length >= 2, getString(R.string.self_test_frames_incomplete));
             java.util.Arrays.sort(rawFrames, (left, right) -> left.getName().compareTo(right.getName()));
             ArrayList<File> frames = new ArrayList<>(rawFrames.length);
             for (File frame : rawFrames) {
@@ -86,11 +86,13 @@ public final class StitchSelfTestActivity extends Activity {
                     frames,
                     new int[frames.size()]);
             StitchQueueService.start(this);
-            String summary = "已将 " + frames.size() + " 帧加入后台拼接队列：" + job.id;
+            String summary = getString(R.string.self_test_queued, frames.size(), job.id);
             Log.i(TAG, summary);
             showResult(summary, 0xff146c43);
         } catch (Throwable error) {
-            String summary = "恢复队列失败：" + error.getClass().getSimpleName() + ": " + error.getMessage();
+            String summary = getString(
+                    R.string.self_test_queue_failed,
+                    error.getClass().getSimpleName() + ": " + error.getMessage());
             Log.e(TAG, summary, error);
             showResult(summary, 0xffb42318);
         }

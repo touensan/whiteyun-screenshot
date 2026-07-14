@@ -241,7 +241,7 @@ final class LongScreenshotStitcher {
             int staticBottom) {
         PreparedFrames prepared = prepareFrames(frames, staticTop, staticBottom);
         if (prepared.frames.size() != 2) {
-            throw new IllegalArgumentException("轨迹接缝只支持相邻两帧");
+            throw new IllegalArgumentException(WhiteYunScreenshotApp.text(R.string.error_seam_pair_only));
         }
         int maxOverlap = maxOverlap(prepared.matchRects[0], prepared.matchRects[1]);
         int expected = clamp(expectedOverlap, 0, maxOverlap);
@@ -342,7 +342,7 @@ final class LongScreenshotStitcher {
 
     private static int viewportCropTop(PreparedFrames prepared, int overlap) {
         if (prepared.frames.size() != 2) {
-            throw new IllegalArgumentException("流式接缝需要相邻两帧");
+            throw new IllegalArgumentException(WhiteYunScreenshotApp.text(R.string.error_seam_stream_pair_only));
         }
         int safeOverlap = clamp(overlap, 0, maxOverlap(prepared.matchRects[0], prepared.matchRects[1]));
         return safeViewportCropTop(prepared, 1, safeOverlap);
@@ -395,7 +395,7 @@ final class LongScreenshotStitcher {
                         0,
                         false,
                         false,
-                        "滚动距离过大、重合不足，无法可靠自动接缝");
+                        WhiteYunScreenshotApp.text(R.string.error_seam_insufficient_overlap));
             } else {
                 if (delta > 0) {
                     expectedOverlaps[i] = clamp(maxOverlaps[i] - delta, 0, maxOverlaps[i]);
@@ -459,7 +459,7 @@ final class LongScreenshotStitcher {
                 seamScores[i] = pathResult.seamScore;
                 consensusScores[i] = pathResult.consensusScore;
                 noMovement[i] = false;
-                seamMessages[i] = "相邻滚动轨迹确认";
+                seamMessages[i] = WhiteYunScreenshotApp.text(R.string.seam_path_confirmed);
                 expectedOverlaps[i] = expected;
                 Log.i(TAG, "neighbor-path-confirmed seam=" + i
                         + " expected=" + expected
@@ -568,7 +568,7 @@ final class LongScreenshotStitcher {
 
     private static int minWidth(List<Bitmap> frames) {
         if (frames.isEmpty()) {
-            throw new IllegalArgumentException("没有可拼接的采样帧");
+            throw new IllegalArgumentException(WhiteYunScreenshotApp.text(R.string.error_no_frames));
         }
 
         int width = frames.get(0).getWidth();
@@ -584,7 +584,7 @@ final class LongScreenshotStitcher {
 
     private static int totalHeight(PreparedFrames prepared, int[] overlaps, int[] bottomGuards) {
         if (overlaps.length != prepared.frames.size()) {
-            throw new IllegalArgumentException("接缝数量与图片数量不一致");
+            throw new IllegalArgumentException(WhiteYunScreenshotApp.text(R.string.error_seam_count_mismatch));
         }
         long totalHeight = segmentHeight(prepared, 0, 0, bottomGuards[0]);
         ensureStitchLimit(prepared.width, totalHeight);
@@ -600,7 +600,7 @@ final class LongScreenshotStitcher {
 
     private static void ensureStitchLimit(int width, long height) {
         if (height > MAX_STITCH_HEIGHT || (long) width * height > MAX_STITCH_PIXELS) {
-            throw new IllegalArgumentException("长图过大，请减少图片数量或压缩截图");
+            throw new IllegalArgumentException(WhiteYunScreenshotApp.text(R.string.error_long_image_too_large));
         }
     }
 
@@ -880,7 +880,7 @@ final class LongScreenshotStitcher {
                 : -1;
         if (maxSearchOverlap <= minOverlap) {
             return new OverlapResult(0, Integer.MAX_VALUE, Integer.MAX_VALUE, 0,
-                    false, false, "可用内容太短，需手动确认接缝");
+                    false, false, WhiteYunScreenshotApp.text(R.string.seam_content_too_short));
         }
 
         int samePositionScore = scoreAlignedContent(
@@ -901,7 +901,7 @@ final class LongScreenshotStitcher {
                     0,
                     true,
                     true,
-                    "疑似重复帧或无位移，已自动跳过重叠部分");
+                    WhiteYunScreenshotApp.text(R.string.seam_duplicate_skipped));
         }
 
         // ponytail: estimated deltas do not get confidence bonuses or early exits; untrusted hints must pass
@@ -1068,7 +1068,7 @@ final class LongScreenshotStitcher {
         Candidate best = refined[0];
         if (best == null) {
             return new OverlapResult(0, Integer.MAX_VALUE, Integer.MAX_VALUE, 0,
-                    false, false, "没有找到可用接缝候选");
+                    false, false, WhiteYunScreenshotApp.text(R.string.seam_no_candidate));
         }
         return candidateResult(
                 best,
@@ -1681,23 +1681,23 @@ final class LongScreenshotStitcher {
     private static String seamMessage(Candidate best, boolean confident) {
         if (best.textureScore < LOW_TEXTURE_THRESHOLD
                 && best.consensusScore < BLOCK_CONSENSUS_TARGET) {
-            return "重叠区纹理过少，已转入手动接缝";
+            return WhiteYunScreenshotApp.text(R.string.seam_low_texture);
         }
         if (best.consensusScore < BLOCK_CONSENSUS_ACCEPT_THRESHOLD) {
-            return "重叠块共识不足，已转入手动接缝";
+            return WhiteYunScreenshotApp.text(R.string.seam_low_consensus);
         }
         boolean strongEvidence = best.score <= OVERLAP_STRONG_SCORE_THRESHOLD
                 || best.consensusScore >= BLOCK_CONSENSUS_TARGET;
         if (best.seamScore > SEAM_SCORE_THRESHOLD && !strongEvidence) {
-            return "重叠锚点不稳定，已转入手动接缝";
+            return WhiteYunScreenshotApp.text(R.string.seam_unstable_anchor);
         }
         if (best.score > OVERLAP_SCORE_THRESHOLD) {
-            return "候选重叠评分过高，已转入手动接缝";
+            return WhiteYunScreenshotApp.text(R.string.seam_high_score);
         }
         if (!confident) {
-            return "多个候选接近，已转入手动接缝";
+            return WhiteYunScreenshotApp.text(R.string.seam_ambiguous);
         }
-        return "自动接缝通过";
+        return WhiteYunScreenshotApp.text(R.string.seam_passed);
     }
 
     private static int colorDistance(int first, int second) {

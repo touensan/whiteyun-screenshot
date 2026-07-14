@@ -4,6 +4,7 @@ import android.accessibilityservice.AccessibilityService;
 import android.accessibilityservice.GestureDescription;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Path;
 import android.graphics.Rect;
 import android.os.Build;
@@ -24,6 +25,7 @@ public class AutoScrollAccessibilityService extends AccessibilityService {
     private static volatile AutoScrollAccessibilityService instance;
 
     private final Handler mainHandler = new Handler(Looper.getMainLooper());
+    private Context systemBaseContext;
     private volatile AutoScrollEvidenceStore.LatestEvent latestEvent =
             new AutoScrollEvidenceStore.LatestEvent("", "", "");
     private volatile ScrollObserver scrollObserver;
@@ -402,5 +404,18 @@ public class AutoScrollAccessibilityService extends AccessibilityService {
 
     private static String safeText(CharSequence value) {
         return value == null ? "" : value.toString();
+    }
+
+    @Override
+    protected void attachBaseContext(Context base) {
+        systemBaseContext = base;
+        super.attachBaseContext(AppLocale.wrap(base));
+    }
+
+    @Override
+    public Resources getResources() {
+        return systemBaseContext == null
+                ? super.getResources()
+                : AppLocale.wrap(systemBaseContext).getResources();
     }
 }

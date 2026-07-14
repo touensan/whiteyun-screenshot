@@ -18,7 +18,7 @@ import android.widget.TextView;
 
 import java.io.File;
 
-public class StitchProgressActivity extends Activity {
+public class StitchProgressActivity extends LocalizedActivity {
     private TextView title;
     private TextView status;
     private TextView percent;

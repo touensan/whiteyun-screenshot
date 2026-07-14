@@ -12,6 +12,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.text.format.DateFormat;
+import android.text.format.Formatter;
 import android.util.Size;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -24,13 +26,11 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
-public class HistoryActivity extends Activity {
+public class HistoryActivity extends LocalizedActivity {
     private LinearLayout listContainer;
     private TextView status;
 
@@ -215,7 +215,7 @@ public class HistoryActivity extends Activity {
 
         LinearLayout detail = new LinearLayout(this);
         detail.setOrientation(LinearLayout.VERTICAL);
-        detail.setPadding(dp(12), 0, dp(8), 0);
+        detail.setPaddingRelative(dp(12), 0, dp(8), 0);
 
         TextView name = new TextView(this);
         name.setText(item.name);
@@ -268,7 +268,7 @@ public class HistoryActivity extends Activity {
 
     private LinearLayout.LayoutParams actionButtonParams() {
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0, dp(40), 1f);
-        params.rightMargin = dp(4);
+        params.setMarginEnd(dp(4));
         return params;
     }
 
@@ -352,18 +352,13 @@ public class HistoryActivity extends Activity {
         if (addedSeconds <= 0) {
             return getString(R.string.c13_history_date_unknown);
         }
-        return new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.US)
-                .format(new Date(addedSeconds * 1000L));
+        Date date = new Date(addedSeconds * 1000L);
+        return DateFormat.getDateFormat(this).format(date)
+                + " " + DateFormat.getTimeFormat(this).format(date);
     }
 
     private String formatSize(long bytes) {
-        if (bytes >= 1024L * 1024L) {
-            return String.format(Locale.US, "%.1f MB", bytes / 1024f / 1024f);
-        }
-        if (bytes >= 1024L) {
-            return String.format(Locale.US, "%.0f KB", bytes / 1024f);
-        }
-        return bytes + " B";
+        return Formatter.formatShortFileSize(this, bytes);
     }
 
     private LinearLayout.LayoutParams matchWrapParams(int topMarginDp) {

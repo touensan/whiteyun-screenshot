@@ -27,6 +27,8 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.provider.Settings;
+import android.text.format.DateFormat;
+import android.text.format.Formatter;
 import android.util.Size;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -45,18 +47,18 @@ import android.widget.Toast;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-public class MainActivity extends Activity {
+public class MainActivity extends LocalizedActivity {
     private static final int REQUEST_MEDIA_PROJECTION = 1001;
     private static final int REQUEST_POST_NOTIFICATIONS = 1002;
     private static final int TAB_HOME = 0;
     private static final int TAB_HISTORY = 1;
     private static final int TAB_SETTINGS = 2;
+    private static final String STATE_SELECTED_TAB = "selected_tab";
 
     private TextView status;
     private TextView help;
@@ -151,7 +153,16 @@ public class MainActivity extends Activity {
                 showCaptureInfo(R.string.c30_manual_auto_intro_title, R.string.c30_manual_auto_intro_body));
         closeHelp.setOnClickListener(view -> setHelpVisible(false));
         mainScroll.post(() -> mainScroll.scrollTo(0, 0));
-        showHomeTab();
+        int restoredTab = savedInstanceState == null
+                ? TAB_HOME
+                : savedInstanceState.getInt(STATE_SELECTED_TAB, TAB_HOME);
+        if (restoredTab == TAB_HISTORY) {
+            showHistoryTab();
+        } else if (restoredTab == TAB_SETTINGS) {
+            showSettingsTab();
+        } else {
+            showHomeTab();
+        }
     }
 
     private void configureActionBar() {
@@ -226,6 +237,12 @@ public class MainActivity extends Activity {
         inForeground = false;
         unregisterReceiver(statusReceiver);
         super.onStop();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putInt(STATE_SELECTED_TAB, selectedTab);
+        super.onSaveInstanceState(outState);
     }
 
     @Override
@@ -644,7 +661,7 @@ public class MainActivity extends Activity {
 
         LinearLayout detail = new LinearLayout(this);
         detail.setOrientation(LinearLayout.VERTICAL);
-        detail.setPadding(dp(12), 0, 0, 0);
+        detail.setPaddingRelative(dp(12), 0, 0, 0);
 
         TextView name = new TextView(this);
         name.setText(latest ? R.string.draft_latest_title : R.string.draft_item_title);
@@ -829,7 +846,7 @@ public class MainActivity extends Activity {
 
         LinearLayout detail = new LinearLayout(this);
         detail.setOrientation(LinearLayout.VERTICAL);
-        detail.setPadding(dp(12), 0, dp(8), 0);
+        detail.setPaddingRelative(dp(12), 0, dp(8), 0);
 
         TextView name = new TextView(this);
         name.setText(item.name);
@@ -949,6 +966,18 @@ public class MainActivity extends Activity {
     private void buildSettingsTab() {
         settingsBuilt = true;
         settingsContent.removeAllViews();
+        Button changeLanguage = actionButton(R.string.language_change);
+        changeLanguage.setOnClickListener(view -> showLanguagePicker());
+        String languageTag = AppLocale.currentTag(this);
+        String languageName = languageTag.isEmpty()
+                ? getString(R.string.language_system_default)
+                : AppLocale.nativeDisplayName(languageTag);
+        settingsContent.addView(settingsPanel(
+                getString(R.string.language_title),
+                getString(R.string.language_current, languageName)
+                        + "\n" + getString(R.string.language_body),
+                changeLanguage));
+
         Switch stitchNotifications = new Switch(this);
         stitchNotifications.setText(R.string.c52_stitch_notifications_toggle);
         stitchNotifications.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15);
@@ -1010,6 +1039,35 @@ public class MainActivity extends Activity {
         settingsContent.addView(settingsPanel(
                 getString(R.string.c14_support_update_title),
                 getString(R.string.c14_support_update_not_configured)));
+    }
+
+    private void showLanguagePicker() {
+        String[] supported = AppLocale.supportedTags();
+        CharSequence[] labels = new CharSequence[supported.length + 1];
+        labels[0] = getString(R.string.language_system_default);
+        String current = AppLocale.currentTag(this);
+        int checked = 0;
+        for (int i = 0; i < supported.length; i++) {
+            labels[i + 1] = AppLocale.nativeDisplayName(supported[i]);
+            if (supported[i].equals(current)) {
+                checked = i + 1;
+            }
+        }
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.language_picker_title)
+                .setSingleChoiceItems(labels, checked, (dialog, which) -> {
+                    String selected = which == 0 ? AppLocale.SYSTEM_DEFAULT : supported[which - 1];
+                    dialog.dismiss();
+                    if (selected.equals(current)) {
+                        return;
+                    }
+                    AppLocale.set(this, selected);
+                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+                        recreate();
+                    }
+                })
+                .setNegativeButton(android.R.string.cancel, null)
+                .show();
     }
 
     private View settingsPanel(String title, String body, View... actions) {
@@ -1215,7 +1273,7 @@ public class MainActivity extends Activity {
 
     private LinearLayout.LayoutParams actionButtonParams() {
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0, dp(40), 1f);
-        params.rightMargin = dp(4);
+        params.setMarginEnd(dp(4));
         return params;
     }
 
@@ -1246,17 +1304,13 @@ public class MainActivity extends Activity {
         if (millis <= 0) {
             return getString(R.string.c13_history_date_unknown);
         }
-        return new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.US).format(new Date(millis));
+        Date date = new Date(millis);
+        return DateFormat.getDateFormat(this).format(date)
+                + " " + DateFormat.getTimeFormat(this).format(date);
     }
 
     private String formatSize(long bytes) {
-        if (bytes >= 1024L * 1024L) {
-            return String.format(Locale.US, "%.1f MB", bytes / 1024f / 1024f);
-        }
-        if (bytes >= 1024L) {
-            return String.format(Locale.US, "%.0f KB", bytes / 1024f);
-        }
-        return bytes + " B";
+        return Formatter.formatShortFileSize(this, bytes);
     }
 
     private int dp(int value) {

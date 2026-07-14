@@ -12,6 +12,8 @@ final class AppPreferences {
     private static final String KEY_SAVE_ORIGINALS = "preview_save_originals";
     private static final String KEY_STITCH_NOTIFICATIONS = "stitch_completion_notifications";
     private static final String KEY_CAPTURE_STATUS_BAR = "capture_status_bar";
+    private static final String KEY_APP_LANGUAGE = "app_language";
+    private static final String KEY_APP_LANGUAGE_MIGRATED = "app_language_migrated";
 
     private AppPreferences() {
     }
@@ -42,6 +44,14 @@ final class AppPreferences {
 
     static boolean isCaptureStatusBarEnabled(Context context) {
         return preferences(context).getBoolean(KEY_CAPTURE_STATUS_BAR, false);
+    }
+
+    static String getAppLanguage(Context context) {
+        return preferences(context).getString(KEY_APP_LANGUAGE, "");
+    }
+
+    static boolean isAppLanguageMigrated(Context context) {
+        return preferences(context).getBoolean(KEY_APP_LANGUAGE_MIGRATED, false);
     }
 
     static void setCaptureOptions(
@@ -85,8 +95,24 @@ final class AppPreferences {
                 .apply();
     }
 
+    static void setAppLanguage(Context context, String languageTag) {
+        preferences(context)
+                .edit()
+                .putString(KEY_APP_LANGUAGE, languageTag == null ? "" : languageTag)
+                .apply();
+    }
+
+    static void setAppLanguageMigrated(Context context) {
+        preferences(context)
+                .edit()
+                .putBoolean(KEY_APP_LANGUAGE_MIGRATED, true)
+                .apply();
+    }
+
     private static SharedPreferences preferences(Context context) {
         // ponytail: SharedPreferences is enough for these local booleans; migrate to DataStore if settings become syncable or multi-profile.
-        return context.getApplicationContext().getSharedPreferences(NAME, Context.MODE_PRIVATE);
+        Context application = context.getApplicationContext();
+        return (application == null ? context : application)
+                .getSharedPreferences(NAME, Context.MODE_PRIVATE);
     }
 }

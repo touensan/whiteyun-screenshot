@@ -28,7 +28,7 @@ import java.util.Locale;
  * The open-source build deliberately keeps support offline: no update checker,
  * remote configuration, or diagnostic upload client is included.
  */
-public class SupportActivity extends Activity {
+public class SupportActivity extends LocalizedActivity {
     private TextView status;
 
     @Override

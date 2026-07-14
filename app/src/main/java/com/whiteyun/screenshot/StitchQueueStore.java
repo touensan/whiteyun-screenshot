@@ -38,7 +38,7 @@ final class StitchQueueStore {
             List<File> sourceFrames,
             int[] scrollDeltas) throws IOException {
         if (sourceDir == null || !sourceDir.isDirectory()) {
-            throw new IOException("自动长截图原始帧不存在");
+            throw new IOException(WhiteYunScreenshotApp.text(R.string.error_queue_source_missing));
         }
         validateSourceFrames(sourceFrames);
 
@@ -50,7 +50,7 @@ final class StitchQueueStore {
         boolean movedDirectory = false;
         try {
             if (!staging.mkdirs()) {
-                throw new IOException("无法创建拼接队列任务");
+                throw new IOException(WhiteYunScreenshotApp.text(R.string.error_queue_create_job));
             }
             // ponytail: cache and files normally share app-private storage, so rename is O(1);
             // fall back to copy if a device puts them on different volumes.
@@ -60,7 +60,7 @@ final class StitchQueueStore {
             }
             writeNewJob(staging, id, mode, sourceFrames, scrollDeltas);
             if (!staging.renameTo(target)) {
-                throw new IOException("拼接队列任务发布失败");
+                throw new IOException(WhiteYunScreenshotApp.text(R.string.error_queue_publish_job));
             }
             return load(target);
         } catch (IOException | RuntimeException error) {
@@ -78,7 +78,7 @@ final class StitchQueueStore {
             List<Bitmap> frames,
             int[] scrollDeltas) throws IOException {
         if (frames == null || frames.isEmpty()) {
-            throw new IOException("没有可拼接的采样帧");
+            throw new IOException(WhiteYunScreenshotApp.text(R.string.error_no_frames));
         }
         File root = root(context);
         String id = "job_" + UUID.randomUUID();
@@ -87,12 +87,12 @@ final class StitchQueueStore {
         ArrayList<File> written = new ArrayList<>(frames.size());
         try {
             if (!frameDir.mkdirs()) {
-                throw new IOException("无法创建拼接队列原始帧目录");
+                throw new IOException(WhiteYunScreenshotApp.text(R.string.error_queue_create_frames));
             }
             for (int i = 0; i < frames.size(); i++) {
                 Bitmap frame = frames.get(i);
                 if (frame == null || frame.isRecycled()) {
-                    throw new IOException("第 " + (i + 1) + " 帧已不可用");
+                    throw new IOException(WhiteYunScreenshotApp.text(R.string.error_frame_unavailable, i + 1));
                 }
                 File file = new File(frameDir, String.format("frame_%05d.png", i + 1));
                 StreamingLongScreenshotStitcher.writeFramePng(frame, file);
@@ -101,7 +101,7 @@ final class StitchQueueStore {
             writeNewJob(staging, id, mode, written, scrollDeltas);
             File target = new File(root, id);
             if (!staging.renameTo(target)) {
-                throw new IOException("拼接队列任务发布失败");
+                throw new IOException(WhiteYunScreenshotApp.text(R.string.error_queue_publish_job));
             }
             return load(target);
         } catch (IOException | RuntimeException error) {
@@ -116,7 +116,7 @@ final class StitchQueueStore {
             if (STATE_RUNNING.equals(job.state)) {
                 job.state = STATE_QUEUED;
                 job.progress = 0;
-                job.message = "已恢复后台拼接队列";
+                job.message = WhiteYunScreenshotApp.text(R.string.queue_resumed);
                 save(job);
             }
         }
@@ -186,7 +186,7 @@ final class StitchQueueStore {
                     || STATE_REVIEW.equals(job.state)) {
                 job.state = STATE_QUEUED;
                 job.progress = 0;
-                job.message = "已重新加入后台拼接队列";
+                job.message = WhiteYunScreenshotApp.text(R.string.queue_requeued);
                 save(job);
                 return job;
             }
@@ -198,7 +198,7 @@ final class StitchQueueStore {
         for (Job job : loadAll(context)) {
             if (STATE_QUEUED.equals(job.state) || STATE_RUNNING.equals(job.state)) {
                 job.state = STATE_CANCELED;
-                job.message = "已取消后台拼接";
+                job.message = WhiteYunScreenshotApp.text(R.string.queue_canceled);
                 save(job);
                 return job;
             }
@@ -214,7 +214,7 @@ final class StitchQueueStore {
             if (job.id.equals(jobId)
                     && (STATE_QUEUED.equals(job.state) || STATE_RUNNING.equals(job.state))) {
                 job.state = STATE_CANCELED;
-                job.message = "已取消后台拼接";
+                job.message = WhiteYunScreenshotApp.text(R.string.queue_canceled);
                 save(job);
                 return job;
             }
@@ -233,7 +233,7 @@ final class StitchQueueStore {
                     || STATE_REVIEW.equals(job.state))) {
                 job.state = STATE_QUEUED;
                 job.progress = 0;
-                job.message = "已重新加入后台拼接队列";
+                job.message = WhiteYunScreenshotApp.text(R.string.queue_requeued);
                 save(job);
                 return job;
             }
@@ -265,7 +265,7 @@ final class StitchQueueStore {
             // Android/Linux rename replaces the target; this fallback covers unusual filesystems.
             if (!target.delete() || !part.renameTo(target)) {
                 part.delete();
-                throw new IOException("拼接队列状态保存失败");
+                throw new IOException(WhiteYunScreenshotApp.text(R.string.error_queue_save));
             }
         }
     }
@@ -293,7 +293,7 @@ final class StitchQueueStore {
                 System.currentTimeMillis(),
                 STATE_QUEUED,
                 0,
-                "已加入后台拼接队列",
+                WhiteYunScreenshotApp.text(R.string.c51_stitch_queued),
                 "",
                 frameFiles,
                 normalizedDeltas(scrollDeltas, frameFiles.size()));
@@ -336,7 +336,7 @@ final class StitchQueueStore {
         String mode = required(values, "mode");
         int count = parseInt(values, "frameCount", 0);
         if (count <= 0) {
-            throw new IOException("拼接队列帧清单为空");
+            throw new IOException(WhiteYunScreenshotApp.text(R.string.error_queue_manifest_empty));
         }
         String state = values.getProperty("state", STATE_QUEUED);
         ArrayList<File> frames = new ArrayList<>(count);
@@ -346,7 +346,7 @@ final class StitchQueueStore {
             String name = required(values, "frame." + i);
             File frame = new File(frameDir, name);
             if (!frame.isFile() && !STATE_DONE.equals(state)) {
-                throw new IOException("拼接队列原始帧丢失");
+                throw new IOException(WhiteYunScreenshotApp.text(R.string.error_queue_frame_missing));
             }
             frames.add(frame);
             deltas[i] = parseInt(values, "delta." + i, 0);
@@ -367,25 +367,25 @@ final class StitchQueueStore {
     private static File root(Context context) throws IOException {
         File root = new File(context.getFilesDir(), ROOT_DIR);
         if (!root.isDirectory() && !root.mkdirs()) {
-            throw new IOException("无法创建拼接队列目录");
+            throw new IOException(WhiteYunScreenshotApp.text(R.string.error_queue_create_root));
         }
         return root;
     }
 
     private static void validateSourceFrames(List<File> frames) throws IOException {
         if (frames == null || frames.isEmpty()) {
-            throw new IOException("没有可拼接的采样帧");
+            throw new IOException(WhiteYunScreenshotApp.text(R.string.error_no_frames));
         }
         for (File frame : frames) {
             if (frame == null || !frame.isFile()) {
-                throw new IOException("自动长截图原始帧丢失");
+                throw new IOException(WhiteYunScreenshotApp.text(R.string.error_auto_frame_missing));
             }
         }
     }
 
     private static void copyFrames(List<File> sources, File destinationDir) throws IOException {
         if (!destinationDir.isDirectory() && !destinationDir.mkdirs()) {
-            throw new IOException("无法创建拼接队列原始帧目录");
+            throw new IOException(WhiteYunScreenshotApp.text(R.string.error_queue_create_frames));
         }
         byte[] buffer = new byte[32 * 1024];
         for (File source : sources) {
@@ -400,7 +400,7 @@ final class StitchQueueStore {
             }
             if (!part.renameTo(target)) {
                 part.delete();
-                throw new IOException("拼接队列原始帧发布失败");
+                throw new IOException(WhiteYunScreenshotApp.text(R.string.error_queue_publish_frames));
             }
         }
     }
@@ -416,7 +416,7 @@ final class StitchQueueStore {
     private static String required(Properties values, String name) throws IOException {
         String value = values.getProperty(name);
         if (value == null || value.trim().isEmpty()) {
-            throw new IOException("拼接队列状态不完整");
+            throw new IOException(WhiteYunScreenshotApp.text(R.string.error_queue_state_invalid));
         }
         return value;
     }

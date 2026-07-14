@@ -41,7 +41,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-public class PreviewActivity extends Activity {
+public class PreviewActivity extends LocalizedActivity {
     public static final String EXTRA_IMAGE_PATH = "image_path";
     public static final String EXTRA_IMAGE_URI = "image_uri";
     public static final String EXTRA_SOURCE_FILE_PATHS = "source_file_paths";
@@ -121,7 +121,7 @@ public class PreviewActivity extends Activity {
 
         LinearLayout titleBlock = new LinearLayout(this);
         titleBlock.setOrientation(LinearLayout.VERTICAL);
-        titleBlock.setPadding(dp(8), 0, 0, 0);
+        titleBlock.setPaddingRelative(dp(8), 0, 0, 0);
 
         TextView title = new TextView(this);
         title.setText(R.string.preview_title);
@@ -725,7 +725,7 @@ public class PreviewActivity extends Activity {
         bounds.inJustDecodeBounds = true;
         BitmapFactory.decodeFile(source.getAbsolutePath(), bounds);
         if (bounds.outWidth <= 0 || bounds.outHeight <= 0) {
-            throw new IOException("无法读取待裁剪长图");
+            throw new IOException(getString(R.string.error_crop_source_unreadable));
         }
         StreamingLongScreenshotStitcher.crop(
                 source,

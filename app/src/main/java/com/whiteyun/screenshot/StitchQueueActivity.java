@@ -10,6 +10,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.format.DateFormat;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
@@ -20,13 +21,11 @@ import android.widget.TextView;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 /** Shows durable stitch jobs and keeps the queue actionable while the app is open. */
-public final class StitchQueueActivity extends Activity {
+public final class StitchQueueActivity extends LocalizedActivity {
     static final String EXTRA_EXPECT_NEW_JOB = "expect_new_stitch_job";
     private final Handler handler = new Handler(Looper.getMainLooper());
     private LinearLayout list;
@@ -206,7 +205,7 @@ public final class StitchQueueActivity extends Activity {
         title.setText(getString(
                 R.string.c52_stitch_queue_row_title,
                 modeLabel(job.mode),
-                new SimpleDateFormat("MM-dd HH:mm", Locale.getDefault()).format(new Date(job.createdAt))));
+                formatDate(job.createdAt)));
         title.setTextColor(0xff111827);
         title.setTextSize(16);
         card.addView(title, matchWrap());
@@ -225,7 +224,7 @@ public final class StitchQueueActivity extends Activity {
                 LinearLayout.LayoutParams.MATCH_PARENT, dp(7)));
 
         TextView message = new TextView(this);
-        message.setText(job.message == null ? "" : job.message);
+        message.setText(displayMessage(job));
         message.setTextColor(0xff6b7280);
         message.setTextSize(13);
         message.setPadding(0, dp(5), 0, 0);
@@ -303,8 +302,28 @@ public final class StitchQueueActivity extends Activity {
         return getString(R.string.c52_stitch_queue_state_canceled);
     }
 
+    private String displayMessage(StitchQueueStore.Job job) {
+        // ponytail: derive saved-job copy from state/progress so it follows the current locale;
+        // add structured error codes if queue rows later need localized diagnostic details.
+        if (StitchQueueStore.STATE_QUEUED.equals(job.state)) return getString(R.string.c51_stitch_queued);
+        if (StitchQueueStore.STATE_DONE.equals(job.state)) return getString(R.string.c31_stitch_done);
+        if (StitchQueueStore.STATE_REVIEW.equals(job.state)) return getString(R.string.c52_stitch_queue_state_review);
+        if (StitchQueueStore.STATE_FAILED.equals(job.state)) return getString(R.string.c52_stitch_queue_state_failed);
+        if (StitchQueueStore.STATE_CANCELED.equals(job.state)) return getString(R.string.queue_canceled);
+        if (job.progress >= 94) return getString(R.string.c31_stitch_writing_debug);
+        if (job.progress >= 64) return getString(R.string.c31_stitch_generating_preview);
+        if (job.progress >= 24) return getString(R.string.c31_stitch_analyzing_overlap);
+        return getString(R.string.c51_stitch_running);
+    }
+
+    private String formatDate(long millis) {
+        Date date = new Date(millis);
+        return DateFormat.getDateFormat(this).format(date)
+                + " " + DateFormat.getTimeFormat(this).format(date);
+    }
+
     private String safeError(String error) {
-        return error == null || error.isEmpty() ? "未知错误" : error;
+        return error == null || error.isEmpty() ? getString(R.string.unknown_error) : error;
     }
 
     private LinearLayout.LayoutParams matchWrap() {
@@ -322,7 +341,7 @@ public final class StitchQueueActivity extends Activity {
     private LinearLayout.LayoutParams buttonParams() {
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT, dp(46));
-        params.leftMargin = dp(4);
+        params.setMarginStart(dp(4));
         return params;
     }
 
