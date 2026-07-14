@@ -20,6 +20,10 @@
     <string name="language_system_default">Theo hệ thống</string>
     <string name="language_current">Hiện tại:%1$s</string>
     <string name="language_picker_title">Chọn ngôn ngữ</string>
+    <string name="language_restart_title">Khởi động lại ứng dụng?</string>
+    <string name="language_restart_message">Ứng dụng sẽ khởi động lại để áp dụng ngôn ngữ mới.</string>
+    <string name="language_restart_confirm">Khởi động lại</string>
+    <string name="language_restart_cancel">Hủy</string>
     <string name="unknown_error">Lỗi không xác định</string>
     <string name="capture_screenshot">Chụp ảnh màn hình</string>
     <string name="capture_web_page">Chụp trang web</string>

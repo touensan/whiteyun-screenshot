@@ -1069,13 +1069,30 @@ public class MainActivity extends LocalizedActivity {
                     if (selected.equals(current)) {
                         return;
                     }
-                    AppLocale.set(this, selected);
-                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
-                        recreate();
-                    }
+                    confirmLanguageRestart(selected);
                 })
                 .setNegativeButton(android.R.string.cancel, null)
                 .show();
+    }
+
+    private void confirmLanguageRestart(String selected) {
+        Context targetContext = AppLocale.forTag(this, selected);
+        new AlertDialog.Builder(this)
+                .setTitle(targetContext.getString(R.string.language_restart_title))
+                .setMessage(targetContext.getString(R.string.language_restart_message))
+                .setNegativeButton(targetContext.getString(R.string.language_restart_cancel), null)
+                .setPositiveButton(targetContext.getString(R.string.language_restart_confirm), (dialog, which) -> {
+                    AppLocale.set(this, selected);
+                    restartApplication();
+                })
+                .show();
+    }
+
+    private void restartApplication() {
+        Intent intent = new Intent(this, MainActivity.class)
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        overridePendingTransition(0, 0);
     }
 
     private View settingsPanel(String title, String body, View... actions) {

@@ -20,6 +20,10 @@
     <string name="language_system_default">跟隨系統</string>
     <string name="language_current">目前：%1$s</string>
     <string name="language_picker_title">選擇語言</string>
+    <string name="language_restart_title">重新啟動應用程式？</string>
+    <string name="language_restart_message">應用程式將重新啟動以套用新的語言設定。</string>
+    <string name="language_restart_confirm">重新啟動</string>
+    <string name="language_restart_cancel">取消</string>
     <string name="unknown_error">未知錯誤</string>
     <string name="capture_screenshot">擷取截圖</string>
     <string name="capture_web_page">擷取網頁</string>

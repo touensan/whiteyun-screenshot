@@ -20,6 +20,10 @@
     <string name="language_system_default">ตามระบบ</string>
     <string name="language_current">ปัจจุบัน:%1$s</string>
     <string name="language_picker_title">เลือกภาษา</string>
+    <string name="language_restart_title">เริ่มแอปใหม่หรือไม่</string>
+    <string name="language_restart_message">แอปจะเริ่มใหม่เพื่อใช้ภาษาใหม่</string>
+    <string name="language_restart_confirm">เริ่มใหม่</string>
+    <string name="language_restart_cancel">ยกเลิก</string>
     <string name="unknown_error">ข้อผิดพลาดไม่ทราบสาเหตุ</string>
     <string name="capture_screenshot">จับภาพหน้าจอ</string>
     <string name="capture_web_page">จับภาพหน้าเว็บ</string>

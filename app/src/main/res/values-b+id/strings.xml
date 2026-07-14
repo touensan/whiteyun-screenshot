@@ -20,6 +20,10 @@
     <string name="language_system_default">Ikuti sistem</string>
     <string name="language_current">Saat ini:%1$s</string>
     <string name="language_picker_title">Pilih bahasa</string>
+    <string name="language_restart_title">Mulai ulang aplikasi?</string>
+    <string name="language_restart_message">Aplikasi akan dimulai ulang untuk menerapkan bahasa baru.</string>
+    <string name="language_restart_confirm">Mulai ulang</string>
+    <string name="language_restart_cancel">Batal</string>
     <string name="unknown_error">Kesalahan tidak diketahui</string>
     <string name="capture_screenshot">Tangkap tangkapan layar</string>
     <string name="capture_web_page">Tangkap halaman web</string>

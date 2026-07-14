@@ -20,6 +20,10 @@
     <string name="language_system_default">Volg systeem</string>
     <string name="language_current">Huidig:%1$s</string>
     <string name="language_picker_title">Kies taal</string>
+    <string name="language_restart_title">App opnieuw starten?</string>
+    <string name="language_restart_message">De app wordt opnieuw gestart om de nieuwe taal toe te passen.</string>
+    <string name="language_restart_confirm">Opnieuw starten</string>
+    <string name="language_restart_cancel">Annuleren</string>
     <string name="unknown_error">Onbekende fout</string>
     <string name="capture_screenshot">Screenshot vastleggen</string>
     <string name="capture_web_page">Webpagina vastleggen</string>

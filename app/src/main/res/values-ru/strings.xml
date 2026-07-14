@@ -20,6 +20,10 @@
     <string name="language_system_default">Следовать системе</string>
     <string name="language_current">Текущее:%1$s</string>
     <string name="language_picker_title">Выбрать язык</string>
+    <string name="language_restart_title">Перезапустить приложение?</string>
+    <string name="language_restart_message">Приложение перезапустится, чтобы применить новый язык.</string>
+    <string name="language_restart_confirm">Перезапустить</string>
+    <string name="language_restart_cancel">Отмена</string>
     <string name="unknown_error">Неизвестная ошибка</string>
     <string name="capture_screenshot">Сделать скриншот</string>
     <string name="capture_web_page">Захватить веб-страницу</string>

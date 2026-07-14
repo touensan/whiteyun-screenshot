@@ -20,6 +20,10 @@
     <string name="language_system_default">システムに従う</string>
     <string name="language_current">現在：%1$s</string>
     <string name="language_picker_title">言語を選択</string>
+    <string name="language_restart_title">アプリを再起動しますか？</string>
+    <string name="language_restart_message">新しい言語を適用するため、アプリを再起動します。</string>
+    <string name="language_restart_confirm">再起動</string>
+    <string name="language_restart_cancel">キャンセル</string>
     <string name="unknown_error">不明なエラー</string>
     <string name="capture_screenshot">スクリーンショットをキャプチャ</string>
     <string name="capture_web_page">ウェブページをキャプチャ</string>

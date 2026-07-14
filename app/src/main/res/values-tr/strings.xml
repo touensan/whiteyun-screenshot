@@ -20,6 +20,10 @@
     <string name="language_system_default">Sistemi takip et</string>
     <string name="language_current">Mevcut:%1$s</string>
     <string name="language_picker_title">Dil seçimi</string>
+    <string name="language_restart_title">Uygulama yeniden başlatılsın mı?</string>
+    <string name="language_restart_message">Yeni dili uygulamak için uygulama yeniden başlatılacak.</string>
+    <string name="language_restart_confirm">Yeniden başlat</string>
+    <string name="language_restart_cancel">İptal</string>
     <string name="unknown_error">Bilinmeyen hata</string>
     <string name="capture_screenshot">Ekran görüntüsü yakala</string>
     <string name="capture_web_page">Web sayfasını yakala</string>

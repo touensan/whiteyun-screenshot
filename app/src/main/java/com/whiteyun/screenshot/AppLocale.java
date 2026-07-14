@@ -5,6 +5,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.os.Build;
 import android.os.LocaleList;
 
@@ -38,6 +39,18 @@ final class AppLocale {
         Locale locale = Locale.forLanguageTag(tag);
         Configuration configuration = new Configuration(base.getResources().getConfiguration());
         configuration.setLocales(new LocaleList(locale));
+        configuration.setLayoutDirection(locale);
+        return base.createConfigurationContext(configuration);
+    }
+
+    static Context forTag(Context base, String requestedTag) {
+        String tag = normalize(requestedTag);
+        Configuration configuration = new Configuration(base.getResources().getConfiguration());
+        LocaleList locales = tag.isEmpty()
+                ? Resources.getSystem().getConfiguration().getLocales()
+                : LocaleList.forLanguageTags(tag);
+        Locale locale = locales.isEmpty() ? Locale.getDefault() : locales.get(0);
+        configuration.setLocales(locales);
         configuration.setLayoutDirection(locale);
         return base.createConfigurationContext(configuration);
     }

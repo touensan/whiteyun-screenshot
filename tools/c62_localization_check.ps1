@@ -89,6 +89,14 @@ $menu = Get-Content -LiteralPath (Join-Path $res 'menu\menu_main.xml') -Raw
 if ($menu -notmatch 'action_language' -or $menu -notmatch 'ic_translate') {
     throw 'Home menu must expose the language switcher'
 }
+$mainActivity = Get-Content -LiteralPath (Join-Path $root 'app\src\main\java\com\whiteyun\screenshot\MainActivity.java') -Raw
+if ($mainActivity -notmatch 'confirmLanguageRestart' -or $mainActivity -notmatch 'restartApplication' -or $mainActivity -notmatch 'language_restart_title') {
+    throw 'Language switching must confirm in the target language and restart the app in place'
+}
+$appLocale = Get-Content -LiteralPath (Join-Path $root 'app\src\main\java\com\whiteyun\screenshot\AppLocale.java') -Raw
+if ($appLocale -notmatch 'static Context forTag') {
+    throw 'Language confirmation must be able to load strings in the target locale'
+}
 foreach ($iconPath in @(
     'drawable\ic_launcher_background.xml',
     'drawable-nodpi\ic_launcher_foreground.png',

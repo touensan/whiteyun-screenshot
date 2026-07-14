@@ -20,6 +20,10 @@
     <string name="language_system_default">सिस्टम का पालन करें</string>
     <string name="language_current">वर्तमान:%1$s</string>
     <string name="language_picker_title">भाषा चुनें</string>
+    <string name="language_restart_title">ऐप फिर से शुरू करें?</string>
+    <string name="language_restart_message">नई भाषा लागू करने के लिए ऐप फिर से शुरू होगा।</string>
+    <string name="language_restart_confirm">फिर से शुरू करें</string>
+    <string name="language_restart_cancel">रद्द करें</string>
     <string name="unknown_error">अज्ञात त्रुटि</string>
     <string name="capture_screenshot">स्क्रीनशॉट लें</string>
     <string name="capture_web_page">वेब पेज कैप्चर करें</string>

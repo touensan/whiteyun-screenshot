@@ -20,6 +20,10 @@
     <string name="language_system_default">System folgen</string>
     <string name="language_current">Aktuell:%1$s</string>
     <string name="language_picker_title">Sprache auswählen</string>
+    <string name="language_restart_title">App neu starten?</string>
+    <string name="language_restart_message">Die App wird neu gestartet, um die neue Sprache anzuwenden.</string>
+    <string name="language_restart_confirm">Neu starten</string>
+    <string name="language_restart_cancel">Abbrechen</string>
     <string name="unknown_error">Unbekannter Fehler</string>
     <string name="capture_screenshot">Screenshot aufnehmen</string>
     <string name="capture_web_page">Webseite erfassen</string>

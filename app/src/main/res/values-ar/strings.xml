@@ -20,6 +20,10 @@
     <string name="language_system_default">اتباع النظام</string>
     <string name="language_current">الحالي:%1$s</string>
     <string name="language_picker_title">اختر اللغة</string>
+    <string name="language_restart_title">إعادة تشغيل التطبيق؟</string>
+    <string name="language_restart_message">سيُعاد تشغيل التطبيق لتطبيق اللغة الجديدة.</string>
+    <string name="language_restart_confirm">إعادة التشغيل</string>
+    <string name="language_restart_cancel">إلغاء</string>
     <string name="unknown_error">خطأ غير معروف</string>
     <string name="capture_screenshot">التقاط لقطة شاشة</string>
     <string name="capture_web_page">التقاط صفحة ويب</string>

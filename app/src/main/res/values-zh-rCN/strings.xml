@@ -20,6 +20,10 @@
     <string name="language_system_default">跟随系统</string>
     <string name="language_current">当前：%1$s</string>
     <string name="language_picker_title">选择语言</string>
+    <string name="language_restart_title">重启应用？</string>
+    <string name="language_restart_message">应用将重启以应用新的语言设置。</string>
+    <string name="language_restart_confirm">重启</string>
+    <string name="language_restart_cancel">取消</string>
     <string name="unknown_error">未知错误</string>
     <string name="capture_screenshot">捕获截图</string>
     <string name="capture_web_page">捕获网页</string>
