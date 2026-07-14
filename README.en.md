@@ -54,7 +54,7 @@ Stitching jobs run through a background queue and can be viewed or retried. Resu
 
 ## Localization
 
-WhiteYun Screenshot follows the device's system language by default. The globe button in the home toolbar opens the language picker directly; you can also switch language from **Settings** inside the app.
+WhiteYun Screenshot follows the device's system language by default. The A/文 translation button in the home toolbar opens the language picker directly; you can also switch language from **Settings** inside the app.
 
 The app includes 19 languages:
 
