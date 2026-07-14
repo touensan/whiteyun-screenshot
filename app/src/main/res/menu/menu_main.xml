@@ -2,7 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/action_language"
-        android:icon="@drawable/ic_language"
+        android:icon="@drawable/ic_translate"
         android:orderInCategory="99"
         android:showAsAction="ifRoom"
         android:title="@string/language_change" />

@@ -72,8 +72,8 @@ $manifest = Get-Content -LiteralPath (Join-Path $root 'app\src\main\AndroidManif
 if ($manifest -notmatch 'android:supportsRtl="true"') {
     throw 'Manifest must enable RTL support'
 }
-if (($manifest -notmatch 'android:icon="@mipmap/ic_launcher"') -or ($manifest -notmatch 'android:roundIcon="@mipmap/ic_launcher_round"')) {
-    throw 'Manifest must use adaptive launcher icons'
+if (($manifest -notmatch 'android:icon="@drawable/ic_launcher_whiteyun"') -or ($manifest -notmatch 'android:roundIcon="@drawable/ic_launcher_whiteyun"')) {
+    throw 'Manifest must keep the original WhiteYun launcher artwork'
 }
 if (([regex]::Matches($manifest, '<activity-alias\b')).Count -ne ($expectedTags.Count + 1)) {
     throw 'Manifest must provide one default and one launcher alias per language'
@@ -83,14 +83,13 @@ if ($appLocaleSource -notmatch 'syncLauncherAlias') {
     throw 'AppLocale must synchronize the launcher label alias'
 }
 $menu = Get-Content -LiteralPath (Join-Path $res 'menu\menu_main.xml') -Raw
-if ($menu -notmatch 'action_language' -or $menu -notmatch 'ic_language') {
+if ($menu -notmatch 'action_language' -or $menu -notmatch 'ic_translate') {
     throw 'Home menu must expose the language switcher'
 }
 foreach ($iconPath in @(
-    'drawable\ic_language.xml',
-    'drawable\ic_launcher_foreground.xml',
-    'mipmap-anydpi-v26\ic_launcher.xml',
-    'mipmap-anydpi-v26\ic_launcher_round.xml')) {
+    'drawable\ic_translate.xml',
+    'mipmap\ic_launcher.xml',
+    'mipmap\ic_launcher_round.xml')) {
     if (-not (Test-Path -LiteralPath (Join-Path $res $iconPath))) {
         throw "Missing launcher/language icon: $iconPath"
     }
