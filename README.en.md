@@ -4,6 +4,10 @@
 
 WhiteYun Screenshot is an Android app for capturing and stitching long screenshots. It is designed for chat histories, webpages, automatically or manually scrolled content, and existing groups of images.
 
+## Long-screenshot algorithm
+
+The app uses and continuously maintains the [WhiteYun long-screenshot stitching algorithm notes](https://github.com/touensan/whiteyun-long-screenshot-algorithms). The approach combines stable system-edge detection, overlap search, block-level visual consensus, repeated-content disambiguation, safe seam selection, streaming output, and fail-closed review paths. It has been iterated through extensive Android long-screenshot practice and is effective in most ordinary continuous-scroll cases; ambiguous animated, periodic, or low-texture content is kept reviewable instead of being silently guessed.
+
 The goal is simple: capture, scroll, stitch, preview, and save in one workflow, instead of taking a dozen screenshots and later guessing how they fit together.
 
 ## Project background: rebuilding from LongScreenShot
