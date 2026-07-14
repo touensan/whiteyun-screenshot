@@ -78,7 +78,7 @@ The app includes 19 languages:
 - Polish
 - Dutch
 
-Localization works fully offline at runtime. The launcher name follows the system or selected app language, while the original WhiteYun cloud-and-long-screenshot mark is preserved and shaped by each device launcher. Community review and corrections are welcome, especially from native speakers.
+Localization works fully offline at runtime. The launcher name follows the system or selected app language, while the adaptive icon keeps the original WhiteYun cloud-and-long-screenshot mark on an orange background; Pixel, OnePlus, and other launchers apply their own circle or rounded-square mask without nesting one shape inside another. Community review and corrections are welcome, especially from native speakers.
 
 ## Build from source
 
