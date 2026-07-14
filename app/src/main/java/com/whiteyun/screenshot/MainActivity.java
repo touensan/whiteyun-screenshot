@@ -254,8 +254,12 @@ public class MainActivity extends LocalizedActivity {
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         boolean home = selectedTab == TAB_HOME;
+        MenuItem language = menu.findItem(R.id.action_language);
         MenuItem settings = menu.findItem(R.id.action_settings);
         MenuItem usage = menu.findItem(R.id.action_usage);
+        if (language != null) {
+            language.setVisible(home);
+        }
         if (settings != null) {
             settings.setVisible(home);
         }
@@ -268,6 +272,10 @@ public class MainActivity extends LocalizedActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int itemId = item.getItemId();
+        if (itemId == R.id.action_language) {
+            showLanguagePicker();
+            return true;
+        }
         if (itemId == R.id.action_settings) {
             showSettingsMenu();
             return true;

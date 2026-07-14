@@ -1,7 +1,9 @@
 package com.whiteyun.screenshot;
 
 import android.app.LocaleManager;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.LocaleList;
@@ -14,6 +16,12 @@ final class AppLocale {
     private static final String[] SUPPORTED_TAGS = {
             "en", "zh-CN", "zh-TW", "es", "fr", "de", "pt-BR", "ru",
             "ja", "ko", "ar", "hi", "id", "it", "tr", "vi", "th", "pl", "nl"
+    };
+    private static final String[] LAUNCHER_ALIAS_SUFFIXES = {
+            "LauncherDefault", "LauncherEn", "LauncherZhCn", "LauncherZhTw", "LauncherEs",
+            "LauncherFr", "LauncherDe", "LauncherPtBr", "LauncherRu", "LauncherJa",
+            "LauncherKo", "LauncherAr", "LauncherHi", "LauncherId", "LauncherIt",
+            "LauncherTr", "LauncherVi", "LauncherTh", "LauncherPl", "LauncherNl"
     };
 
     private AppLocale() {
@@ -70,6 +78,27 @@ final class AppLocale {
             }
             AppPreferences.setAppLanguageMigrated(context);
         }
+        syncLauncherAlias(context);
+    }
+
+    static void syncLauncherAlias(Context context) {
+        String tag = currentTag(context);
+        int selected = tag.isEmpty() ? 0 : indexOf(tag) + 1;
+        if (selected <= 0) {
+            selected = 0;
+        }
+        PackageManager packageManager = context.getPackageManager();
+        for (int i = 0; i < LAUNCHER_ALIAS_SUFFIXES.length; i++) {
+            ComponentName component = new ComponentName(
+                    context,
+                    context.getPackageName() + "." + LAUNCHER_ALIAS_SUFFIXES[i]);
+            packageManager.setComponentEnabledSetting(
+                    component,
+                    i == selected
+                            ? PackageManager.COMPONENT_ENABLED_STATE_ENABLED
+                            : PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
+                    PackageManager.DONT_KILL_APP);
+        }
     }
 
     static String[] supportedTags() {
@@ -79,6 +108,15 @@ final class AppLocale {
     static String nativeDisplayName(String tag) {
         Locale locale = Locale.forLanguageTag(normalize(tag));
         return locale.getDisplayName(locale);
+    }
+
+    private static int indexOf(String tag) {
+        for (int i = 0; i < SUPPORTED_TAGS.length; i++) {
+            if (SUPPORTED_TAGS[i].equals(tag)) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     private static String normalize(String requestedTag) {

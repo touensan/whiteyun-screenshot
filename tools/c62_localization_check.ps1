@@ -56,6 +56,9 @@ foreach ($directory in $expected) {
             throw "$directory/$name format tokens differ: $($localizedTokens -join ',')"
         }
     }
+    if (($directory -notin @('values', 'values-zh-rCN', 'values-zh-rTW')) -and ($localized['app_name'] -match '[\p{IsCJKUnifiedIdeographs}]')) {
+        throw "$directory app_name still contains Chinese characters"
+    }
 }
 
 $localeSource = Get-Content -LiteralPath (Join-Path $root 'app\src\main\java\com\whiteyun\screenshot\AppLocale.java') -Raw
@@ -68,6 +71,29 @@ foreach ($tag in $expectedTags) {
 $manifest = Get-Content -LiteralPath (Join-Path $root 'app\src\main\AndroidManifest.xml') -Raw
 if ($manifest -notmatch 'android:supportsRtl="true"') {
     throw 'Manifest must enable RTL support'
+}
+if (($manifest -notmatch 'android:icon="@mipmap/ic_launcher"') -or ($manifest -notmatch 'android:roundIcon="@mipmap/ic_launcher_round"')) {
+    throw 'Manifest must use adaptive launcher icons'
+}
+if (([regex]::Matches($manifest, '<activity-alias\b')).Count -ne ($expectedTags.Count + 1)) {
+    throw 'Manifest must provide one default and one launcher alias per language'
+}
+$appLocaleSource = Get-Content -LiteralPath (Join-Path $root 'app\src\main\java\com\whiteyun\screenshot\AppLocale.java') -Raw
+if ($appLocaleSource -notmatch 'syncLauncherAlias') {
+    throw 'AppLocale must synchronize the launcher label alias'
+}
+$menu = Get-Content -LiteralPath (Join-Path $res 'menu\menu_main.xml') -Raw
+if ($menu -notmatch 'action_language' -or $menu -notmatch 'ic_language') {
+    throw 'Home menu must expose the language switcher'
+}
+foreach ($iconPath in @(
+    'drawable\ic_language.xml',
+    'drawable\ic_launcher_foreground.xml',
+    'mipmap-anydpi-v26\ic_launcher.xml',
+    'mipmap-anydpi-v26\ic_launcher_round.xml')) {
+    if (-not (Test-Path -LiteralPath (Join-Path $res $iconPath))) {
+        throw "Missing launcher/language icon: $iconPath"
+    }
 }
 $properties = Get-Content -LiteralPath (Join-Path $res 'resources.properties') -Raw
 if ($properties -notmatch 'unqualifiedResLocale=en') {

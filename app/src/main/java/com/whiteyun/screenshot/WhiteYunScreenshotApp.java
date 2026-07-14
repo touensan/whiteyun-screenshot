@@ -18,6 +18,7 @@ public class WhiteYunScreenshotApp extends Application {
         super.onCreate();
         instance = this;
         AppLocale.migrateToPlatformIfNeeded(this);
+        AppLocale.syncLauncherAlias(this);
         if (!BuildConfig.DEBUG && !AppIntegrity.hasOfficialSignature(this)) {
             throw new SecurityException("Untrusted application signature");
         }

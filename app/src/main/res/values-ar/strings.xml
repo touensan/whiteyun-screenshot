@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">WhiteYun Screenshot</string>
+    <string name="app_name">لقطات WhiteYun</string>
     <string name="action_auto_longshot">لقطة شاشة طويلة تلقائية</string>
     <string name="action_manual_longshot">لقطة شاشة طويلة يدوية</string>
     <string name="action_stitch_images">دمج صور متعددة</string>

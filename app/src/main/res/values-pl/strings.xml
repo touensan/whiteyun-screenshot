@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">WhiteYun Screenshot</string>
+    <string name="app_name">Zrzuty WhiteYun</string>
     <string name="action_auto_longshot">Automatyczne długie zrzuty ekranu</string>
     <string name="action_manual_longshot">Ręczne długie zrzuty ekranu</string>
     <string name="action_stitch_images">Sklejanie wielu obrazów</string>

@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">WhiteYun Screenshot</string>
+    <string name="app_name">WhiteYun स्क्रीनशॉट</string>
     <string name="action_auto_longshot">स्वत: लंबा स्क्रीनशॉट</string>
     <string name="action_manual_longshot">मैनुअल लंबा स्क्रीनशॉट</string>
     <string name="action_stitch_images">मल्टी-इमेज संयोजन</string>

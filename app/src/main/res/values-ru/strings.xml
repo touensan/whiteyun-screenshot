@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">WhiteYun Screenshot</string>
+    <string name="app_name">Скриншоты WhiteYun</string>
     <string name="action_auto_longshot">Автоматический длинный скриншот</string>
     <string name="action_manual_longshot">Ручной длинный скриншот</string>
     <string name="action_stitch_images">Многокадровое объединение</string>

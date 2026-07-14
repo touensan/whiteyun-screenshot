@@ -15,9 +15,9 @@
     <application
         android:name=".WhiteYunScreenshotApp"
         android:allowBackup="false"
-        android:icon="@drawable/ic_launcher_whiteyun"
+        android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:roundIcon="@drawable/ic_launcher_whiteyun"
+        android:roundIcon="@mipmap/ic_launcher_round"
         android:resizeableActivity="true"
         android:supportsRtl="true"
         android:usesCleartextTraffic="false"
@@ -25,12 +25,76 @@
         <activity
             android:name=".MainActivity"
             android:exported="true">
+        </activity>
+        <activity-alias
+            android:name=".LauncherDefault"
+            android:enabled="true"
+            android:exported="true"
+            android:icon="@mipmap/ic_launcher"
+            android:label="@string/app_name"
+            android:targetActivity=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
+        </activity-alias>
+        <activity-alias android:name=".LauncherEn" android:enabled="false" android:exported="true" android:icon="@mipmap/ic_launcher" android:label="WhiteYun Screenshot" android:targetActivity=".MainActivity">
+            <intent-filter><action android:name="android.intent.action.MAIN" /><category android:name="android.intent.category.LAUNCHER" /></intent-filter>
+        </activity-alias>
+        <activity-alias android:name=".LauncherZhCn" android:enabled="false" android:exported="true" android:icon="@mipmap/ic_launcher" android:label="白云截屏" android:targetActivity=".MainActivity">
+            <intent-filter><action android:name="android.intent.action.MAIN" /><category android:name="android.intent.category.LAUNCHER" /></intent-filter>
+        </activity-alias>
+        <activity-alias android:name=".LauncherZhTw" android:enabled="false" android:exported="true" android:icon="@mipmap/ic_launcher" android:label="白雲截屏" android:targetActivity=".MainActivity">
+            <intent-filter><action android:name="android.intent.action.MAIN" /><category android:name="android.intent.category.LAUNCHER" /></intent-filter>
+        </activity-alias>
+        <activity-alias android:name=".LauncherEs" android:enabled="false" android:exported="true" android:icon="@mipmap/ic_launcher" android:label="Capturas WhiteYun" android:targetActivity=".MainActivity">
+            <intent-filter><action android:name="android.intent.action.MAIN" /><category android:name="android.intent.category.LAUNCHER" /></intent-filter>
+        </activity-alias>
+        <activity-alias android:name=".LauncherFr" android:enabled="false" android:exported="true" android:icon="@mipmap/ic_launcher" android:label="Capture WhiteYun" android:targetActivity=".MainActivity">
+            <intent-filter><action android:name="android.intent.action.MAIN" /><category android:name="android.intent.category.LAUNCHER" /></intent-filter>
+        </activity-alias>
+        <activity-alias android:name=".LauncherDe" android:enabled="false" android:exported="true" android:icon="@mipmap/ic_launcher" android:label="WhiteYun Screenshot" android:targetActivity=".MainActivity">
+            <intent-filter><action android:name="android.intent.action.MAIN" /><category android:name="android.intent.category.LAUNCHER" /></intent-filter>
+        </activity-alias>
+        <activity-alias android:name=".LauncherPtBr" android:enabled="false" android:exported="true" android:icon="@mipmap/ic_launcher" android:label="Captura WhiteYun" android:targetActivity=".MainActivity">
+            <intent-filter><action android:name="android.intent.action.MAIN" /><category android:name="android.intent.category.LAUNCHER" /></intent-filter>
+        </activity-alias>
+        <activity-alias android:name=".LauncherRu" android:enabled="false" android:exported="true" android:icon="@mipmap/ic_launcher" android:label="Скриншоты WhiteYun" android:targetActivity=".MainActivity">
+            <intent-filter><action android:name="android.intent.action.MAIN" /><category android:name="android.intent.category.LAUNCHER" /></intent-filter>
+        </activity-alias>
+        <activity-alias android:name=".LauncherJa" android:enabled="false" android:exported="true" android:icon="@mipmap/ic_launcher" android:label="WhiteYun スクリーンショット" android:targetActivity=".MainActivity">
+            <intent-filter><action android:name="android.intent.action.MAIN" /><category android:name="android.intent.category.LAUNCHER" /></intent-filter>
+        </activity-alias>
+        <activity-alias android:name=".LauncherKo" android:enabled="false" android:exported="true" android:icon="@mipmap/ic_launcher" android:label="WhiteYun 스크린샷" android:targetActivity=".MainActivity">
+            <intent-filter><action android:name="android.intent.action.MAIN" /><category android:name="android.intent.category.LAUNCHER" /></intent-filter>
+        </activity-alias>
+        <activity-alias android:name=".LauncherAr" android:enabled="false" android:exported="true" android:icon="@mipmap/ic_launcher" android:label="لقطات WhiteYun" android:targetActivity=".MainActivity">
+            <intent-filter><action android:name="android.intent.action.MAIN" /><category android:name="android.intent.category.LAUNCHER" /></intent-filter>
+        </activity-alias>
+        <activity-alias android:name=".LauncherHi" android:enabled="false" android:exported="true" android:icon="@mipmap/ic_launcher" android:label="WhiteYun स्क्रीनशॉट" android:targetActivity=".MainActivity">
+            <intent-filter><action android:name="android.intent.action.MAIN" /><category android:name="android.intent.category.LAUNCHER" /></intent-filter>
+        </activity-alias>
+        <activity-alias android:name=".LauncherId" android:enabled="false" android:exported="true" android:icon="@mipmap/ic_launcher" android:label="Screenshot WhiteYun" android:targetActivity=".MainActivity">
+            <intent-filter><action android:name="android.intent.action.MAIN" /><category android:name="android.intent.category.LAUNCHER" /></intent-filter>
+        </activity-alias>
+        <activity-alias android:name=".LauncherIt" android:enabled="false" android:exported="true" android:icon="@mipmap/ic_launcher" android:label="Screenshot WhiteYun" android:targetActivity=".MainActivity">
+            <intent-filter><action android:name="android.intent.action.MAIN" /><category android:name="android.intent.category.LAUNCHER" /></intent-filter>
+        </activity-alias>
+        <activity-alias android:name=".LauncherTr" android:enabled="false" android:exported="true" android:icon="@mipmap/ic_launcher" android:label="WhiteYun Ekran Görüntüsü" android:targetActivity=".MainActivity">
+            <intent-filter><action android:name="android.intent.action.MAIN" /><category android:name="android.intent.category.LAUNCHER" /></intent-filter>
+        </activity-alias>
+        <activity-alias android:name=".LauncherVi" android:enabled="false" android:exported="true" android:icon="@mipmap/ic_launcher" android:label="Ảnh chụp WhiteYun" android:targetActivity=".MainActivity">
+            <intent-filter><action android:name="android.intent.action.MAIN" /><category android:name="android.intent.category.LAUNCHER" /></intent-filter>
+        </activity-alias>
+        <activity-alias android:name=".LauncherTh" android:enabled="false" android:exported="true" android:icon="@mipmap/ic_launcher" android:label="ภาพหน้าจอ WhiteYun" android:targetActivity=".MainActivity">
+            <intent-filter><action android:name="android.intent.action.MAIN" /><category android:name="android.intent.category.LAUNCHER" /></intent-filter>
+        </activity-alias>
+        <activity-alias android:name=".LauncherPl" android:enabled="false" android:exported="true" android:icon="@mipmap/ic_launcher" android:label="Zrzuty WhiteYun" android:targetActivity=".MainActivity">
+            <intent-filter><action android:name="android.intent.action.MAIN" /><category android:name="android.intent.category.LAUNCHER" /></intent-filter>
+        </activity-alias>
+        <activity-alias android:name=".LauncherNl" android:enabled="false" android:exported="true" android:icon="@mipmap/ic_launcher" android:label="WhiteYun-screenshot" android:targetActivity=".MainActivity">
+            <intent-filter><action android:name="android.intent.action.MAIN" /><category android:name="android.intent.category.LAUNCHER" /></intent-filter>
+        </activity-alias>
         <activity
             android:name=".PreviewActivity"
             android:exported="false" />

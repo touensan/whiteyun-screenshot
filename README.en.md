@@ -53,7 +53,7 @@ Stitching jobs run through a background queue and can be viewed or retried. Resu
 
 ## Localization
 
-WhiteYun Screenshot follows the device's system language by default. You can switch to another language at any time from **Settings** inside the app.
+WhiteYun Screenshot follows the device's system language by default. The globe button in the home toolbar opens the language picker directly; you can also switch language from **Settings** inside the app.
 
 The app includes 19 languages:
 
@@ -77,7 +77,7 @@ The app includes 19 languages:
 - Polish
 - Dutch
 
-Localization works fully offline at runtime. Community review and corrections are welcome, especially from native speakers.
+Localization works fully offline at runtime. The launcher name follows the system or selected app language, and the app uses an Android adaptive icon. Community review and corrections are welcome, especially from native speakers.
 
 ## Build from source
 

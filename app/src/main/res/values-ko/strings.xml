@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">WhiteYun Screenshot</string>
+    <string name="app_name">WhiteYun 스크린샷</string>
     <string name="action_auto_longshot">자동 긴 스크린샷</string>
     <string name="action_manual_longshot">수동 긴 스크린샷</string>
     <string name="action_stitch_images">다중 이미지 이어붙이기</string>

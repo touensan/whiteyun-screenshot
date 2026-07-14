@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">WhiteYun Screenshot</string>
+    <string name="app_name">ภาพหน้าจอ WhiteYun</string>
     <string name="action_auto_longshot">การจับภาพหน้าจอแบบยาวอัตโนมัติ</string>
     <string name="action_manual_longshot">การจับภาพหน้าจอแบบยาวด้วยตนเอง</string>
     <string name="action_stitch_images">การต่อรูปหลายภาพ</string>
