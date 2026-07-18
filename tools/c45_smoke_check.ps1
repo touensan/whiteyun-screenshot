@@ -6,7 +6,12 @@ $service = Get-Content -Raw -LiteralPath (Join-Path $root "app/src/main/java/com
 $streaming = Get-Content -Raw -LiteralPath (Join-Path $root "app/src/main/java/com/whiteyun/screenshot/StreamingLongScreenshotStitcher.java")
 $preview = Get-Content -Raw -LiteralPath (Join-Path $root "app/src/main/java/com/whiteyun/screenshot/PreviewActivity.java")
 $selfTest = Get-Content -Raw -LiteralPath (Join-Path $root "app/src/debug/java/com/whiteyun/screenshot/StitchSelfTestActivity.java")
-$c12 = Get-Content -Raw -LiteralPath (Join-Path $root "tools/c12_release_check.ps1")
+$c12Path = Join-Path $root "tools/c12_release_check.ps1"
+$c12 = if (Test-Path -LiteralPath $c12Path) {
+    Get-Content -Raw -LiteralPath $c12Path
+} else {
+    ""
+}
 $pngjLicense = Join-Path $root "app/src/main/assets/third_party_licenses/pngj-2.1.0.txt"
 
 if (-not $build.Contains("implementation 'ar.com.hjg:pngj:2.1.0'")) {
@@ -32,6 +37,18 @@ foreach ($needle in @(
 
 if ($service.Contains("MAX_AUTO_FRAMES")) {
     throw "C45 automatic capture must not have a fixed frame count"
+}
+if ($service.Contains("MAX_MANUAL_FRAMES")) {
+    throw "Manual capture must not have a fixed frame count"
+}
+foreach ($needle in @(
+    "autoFrameFiles.add(writeAutoFrameFile(bitmap, autoFrameFiles.size()))",
+    "if (manualFrames.size() > AUTO_MEMORY_FRAME_LIMIT)",
+    "autoMode ? MODE_AUTO : MODE_MANUAL"
+)) {
+    if (-not $service.Contains($needle)) {
+        throw "Manual capture is not using the disk-spooled long-shot path: $needle"
+    }
 }
 
 foreach ($needle in @(
@@ -80,7 +97,7 @@ foreach ($needle in @(
     }
 }
 
-if (-not $c12.Contains('$smokeStages += 45')) {
+if ((Test-Path -LiteralPath $c12Path) -and -not $c12.Contains('$smokeStages += 45')) {
     throw "C12 has not included C45 smoke"
 }
 

@@ -10,13 +10,18 @@ abstract class LocalizedService extends Service {
     @Override
     protected void attachBaseContext(Context base) {
         systemBaseContext = base;
-        super.attachBaseContext(AppLocale.wrap(base));
+        super.attachBaseContext(localizedContext(base));
     }
 
     @Override
     public Resources getResources() {
         return systemBaseContext == null
                 ? super.getResources()
-                : AppLocale.wrap(systemBaseContext).getResources();
+                : localizedContext(systemBaseContext).getResources();
+    }
+
+    private Context localizedContext(Context base) {
+        // Services can outlive the Activity that changed the app locale.
+        return AppLocale.forTag(base, AppLocale.currentTag(base));
     }
 }

@@ -7,6 +7,10 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.hardware.DataSpace;
+import android.hardware.HardwareBuffer;
+import android.media.ImageReader;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -49,6 +53,16 @@ public final class StitchSelfTestActivity extends LocalizedActivity {
         status.setText(R.string.self_test_running);
         setContentView(status);
 
+        if (getIntent() != null && getIntent().getBooleanExtra("capture_color_space_only", false)) {
+            try {
+                runCaptureColorSpaceCheck();
+                showResult("PASS capture=RGBA_8888/sRGB", 0xff146c43);
+            } catch (Throwable error) {
+                Log.e(TAG, "capture color-space check failed", error);
+                showResult("FAIL capture: " + error.getMessage(), 0xffb42318);
+            }
+            return;
+        }
         if (getIntent() != null && getIntent().getBooleanExtra("replay_latest", false)) {
             status.setText(R.string.self_test_queueing);
             new Thread(this::enqueueLatestAutoReplay, "whiteyun-stitch-replay").start();
@@ -105,6 +119,7 @@ public final class StitchSelfTestActivity extends LocalizedActivity {
         Bitmap pairStitched = null;
         Bitmap guardStitched = null;
         try {
+            runCaptureColorSpaceCheck();
             runDynamicDuplicateCheck();
             Rect topPreview = PreviewActivity.previewSourceWindow(
                     1440, 31681, 0, 0, 1440, 0, 2952);
@@ -310,6 +325,17 @@ public final class StitchSelfTestActivity extends LocalizedActivity {
             }
             if (conversation != null && !conversation.isRecycled()) {
                 conversation.recycle();
+            }
+        }
+    }
+
+    private static void runCaptureColorSpaceCheck() {
+        try (ImageReader reader = CaptureService.createCaptureImageReader(2, 2)) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                check(reader.getDataSpace() == DataSpace.DATASPACE_SRGB,
+                        "capture reader must declare sRGB");
+                check(reader.getHardwareBufferFormat() == HardwareBuffer.RGBA_8888,
+                        "capture reader must use RGBA_8888");
             }
         }
     }

@@ -409,13 +409,13 @@ public class AutoScrollAccessibilityService extends AccessibilityService {
     @Override
     protected void attachBaseContext(Context base) {
         systemBaseContext = base;
-        super.attachBaseContext(AppLocale.wrap(base));
+        super.attachBaseContext(AppLocale.forTag(base, AppLocale.currentTag(base)));
     }
 
     @Override
     public Resources getResources() {
         return systemBaseContext == null
                 ? super.getResources()
-                : AppLocale.wrap(systemBaseContext).getResources();
+                : AppLocale.forTag(systemBaseContext, AppLocale.currentTag(systemBaseContext)).getResources();
     }
 }

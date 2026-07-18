@@ -19,6 +19,8 @@ import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.GradientDrawable;
+import android.hardware.DataSpace;
+import android.hardware.HardwareBuffer;
 import android.hardware.display.DisplayManager;
 import android.hardware.display.VirtualDisplay;
 import android.media.Image;
@@ -106,7 +108,6 @@ public class CaptureService extends LocalizedService {
     private static final int MAX_AUTO_SCROLL_FAILURES = 2;
     private static final int AUTO_MEMORY_FRAME_LIMIT = 1;
     private static final long AUTO_STORAGE_RESERVE_BYTES = 128L * 1024L * 1024L;
-    private static final int MAX_MANUAL_FRAMES = 10;
     private static final int AUTO_TERMINAL_STATUS_MS = 6000;
     private static final int CAPTURE_OVERLAY_HIDE_MS = 120;
     private static final int MANUAL_CAPTURE_OVERLAY_HIDE_MS = 500;
@@ -298,7 +299,7 @@ public class CaptureService extends LocalizedService {
         projection.registerCallback(projectionCallback, mainHandler);
 
         DisplaySpec spec = displaySpec();
-        imageReader = ImageReader.newInstance(spec.width, spec.height, PixelFormat.RGBA_8888, 2);
+        imageReader = createCaptureImageReader(spec.width, spec.height);
         virtualDisplay = projection.createVirtualDisplay(
                 "WhiteYunScreenshot",
                 spec.width,
@@ -312,6 +313,18 @@ public class CaptureService extends LocalizedService {
         String ready = readyStatus();
         publishStatus(ready);
         startForegroundForCapture(ready);
+    }
+
+    static ImageReader createCaptureImageReader(int width, int height) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            // ponytail: long screenshots are SDR sRGB; add a color-managed HDR path if HDR capture is required later.
+            return new ImageReader.Builder(width, height)
+                    .setDefaultHardwareBufferFormat(HardwareBuffer.RGBA_8888)
+                    .setDefaultDataSpace(DataSpace.DATASPACE_SRGB)
+                    .setMaxImages(2)
+                    .build();
+        }
+        return ImageReader.newInstance(width, height, PixelFormat.RGBA_8888, 2);
     }
 
     private String readyStatus() {
@@ -371,11 +384,6 @@ public class CaptureService extends LocalizedService {
     private void requestManualSample(int preparationDelayMs) {
         if (!MODE_MANUAL.equals(captureMode)) {
             publishStatus(getString(R.string.c2_status_not_running));
-            return;
-        }
-        if (manualFrames.size() >= MAX_MANUAL_FRAMES) {
-            publishStatus(getString(R.string.c3_status_sample_limit, MAX_MANUAL_FRAMES));
-            mainHandler.post(this::showOverlay);
             return;
         }
         if (!requestFrame(
@@ -806,17 +814,15 @@ public class CaptureService extends LocalizedService {
         }
         boolean firstFrame = manualFrames.isEmpty();
         int scrollDelta = firstFrame ? 0 : consumeScrollDeltaForAcceptedFrame();
-        if (auto) {
-            try {
-                autoFrameFiles.add(writeAutoFrameFile(bitmap, autoFrameFiles.size()));
-            } catch (IOException exception) {
-                bitmap.recycle();
-                throw exception;
-            }
+        try {
+            autoFrameFiles.add(writeAutoFrameFile(bitmap, autoFrameFiles.size()));
+        } catch (IOException exception) {
+            bitmap.recycle();
+            throw exception;
         }
         manualFrames.add(bitmap);
-        if (auto && manualFrames.size() > AUTO_MEMORY_FRAME_LIMIT) {
-            // ponytail: automatic sessions spool every frame and retain only the newest Bitmap; pairwise decode is the upgrade path that removes even this one-frame residency.
+        if (manualFrames.size() > AUTO_MEMORY_FRAME_LIMIT) {
+            // ponytail: both long-shot modes spool every frame and retain only the newest Bitmap; pairwise decode is the upgrade path that removes even this one-frame residency.
             for (int i = 0; i < manualFrames.size() - 1; i++) {
                 Bitmap old = manualFrames.get(i);
                 if (old != null && !old.isRecycled()) {
@@ -1056,14 +1062,12 @@ public class CaptureService extends LocalizedService {
             try {
                 int frameCount = manualFrames.size();
                 int[] deltas = stitchScrollDeltasArray(autoMode, frameCount);
-                StitchQueueStore.Job job = autoMode
-                        ? StitchQueueStore.enqueueAuto(
-                                this,
-                                MODE_AUTO,
-                                autoFrameDir,
-                                autoFrameFilesForStitch(),
-                                deltas)
-                        : StitchQueueStore.enqueueManual(this, MODE_MANUAL, manualFrames, deltas);
+                StitchQueueStore.Job job = StitchQueueStore.enqueueAuto(
+                        this,
+                        autoMode ? MODE_AUTO : MODE_MANUAL,
+                        autoFrameDir,
+                        autoFrameFilesForStitch(),
+                        deltas);
                 if (autoMode) {
                     recordAutoEvent("stitch_queued", job.id);
                     closeAutoEvidence("stitch_queued", true);
