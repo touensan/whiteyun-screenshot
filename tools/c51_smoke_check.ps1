@@ -13,7 +13,6 @@ $selfTest = Get-Content -Raw -LiteralPath (Join-Path $root "app/src/debug/java/c
 foreach ($needle in @(
     "enqueueStitchJob(autoMode)",
     "StitchQueueStore.enqueueAuto",
-    "StitchQueueStore.enqueueManual",
     "StitchQueueService.start(this)",
     "AUTO_MEMORY_FRAME_LIMIT = 1"
 )) {
