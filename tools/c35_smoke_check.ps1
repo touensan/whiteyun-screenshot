@@ -63,11 +63,18 @@ foreach ($needle in @(
         throw "Missing C35 accessibility behavior: $needle"
     }
 }
-if (-not $main.Contains('private void startManualCaptureFlow()')) {
-    throw 'Manual mode does not enforce the accessibility preflight'
+if ($main -notmatch '(?s)private void startManualCaptureFlow\(\)\s*\{\s*startCaptureFlow\(CaptureService\.MODE_MANUAL\);\s*\}') {
+    throw 'Manual mode still enforces an accessibility preflight'
+}
+if ($main -notmatch '(?s)private void startAutoCaptureFlow\(\)\s*\{\s*if \(!isAutoScrollAccessibilityEnabled\(\)\)') {
+    throw 'Automatic mode lost its accessibility preflight'
+}
+if ($service -notmatch '(?s)manualScrollCaptureEnabled = AutoScrollAccessibilityService\.isRunning\(\);\s*publishStatus\(getString\(R\.string\.c35_status_capturing_first\)\);\s*requestManualSample\(0\);') {
+    throw 'Manual mode does not capture the first frame without accessibility'
 }
 foreach ($needle in @(
     'c35_manual_scroll_intro',
+    'c35_status_accessibility_fallback',
     'c35_status_auto_sampled',
     'c35_status_waiting_for_settle'
 )) {
