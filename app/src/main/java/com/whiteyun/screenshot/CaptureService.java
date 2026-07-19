@@ -364,12 +364,8 @@ public class CaptureService extends LocalizedService {
         refreshOverlay();
         if (MODE_MANUAL.equals(captureMode)) {
             manualScrollCaptureEnabled = AutoScrollAccessibilityService.isRunning();
-            if (manualScrollCaptureEnabled) {
-                publishStatus(getString(R.string.c35_status_capturing_first));
-                requestManualSample(0);
-            } else {
-                publishStatus(getString(R.string.c35_status_accessibility_fallback));
-            }
+            publishStatus(getString(R.string.c35_status_capturing_first));
+            requestManualSample(0);
         }
     }
 
@@ -857,7 +853,9 @@ public class CaptureService extends LocalizedService {
                 ? getString(R.string.c4_status_auto_sampled, manualFrames.size())
                 : manualScrollCaptureEnabled
                         ? getString(R.string.c35_status_auto_sampled, manualFrames.size())
-                        : getString(R.string.c3_status_sampled, manualFrames.size()));
+                        : firstFrame
+                                ? getString(R.string.c35_status_accessibility_fallback)
+                                : getString(R.string.c3_status_sampled, manualFrames.size()));
         return ADD_FRAME_ADDED;
     }
 

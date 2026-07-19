@@ -395,11 +395,6 @@ public class MainActivity extends LocalizedActivity {
     }
 
     private void startManualCaptureFlow() {
-        if (!isAutoScrollAccessibilityEnabled()) {
-            requestAccessibilityPermission();
-            Toast.makeText(this, R.string.c35_toast_accessibility_needed, Toast.LENGTH_LONG).show();
-            return;
-        }
         startCaptureFlow(CaptureService.MODE_MANUAL);
     }
 
